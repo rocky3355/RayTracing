@@ -71,36 +71,6 @@ Vector3& Vector3::operator/=(const double t)
 	return *this;
 }
 
-std::ostream& Vector3::operator<<(std::ostream& out)
-{
-	return out << v.data[0] << ' ' << v.data[1] << ' ' << v.data[2];
-}
-
-Vector3 Vector3::operator+(const Vector3& v)
-{
-	return Vector3(data[0] + v.data[0], data[1] + v.data[1], data[2] + v.data[2]);
-}
-
-Vector3 Vector3::operator-(const Vector3& v)
-{
-	return Vector3(data[0] * v.data[0], data[1] * v.data[1], data[2] * v.data[2]);
-}
-
-Vector3 Vector3::operator*(const Vector3& v)
-{
-	return Vector3(t * v.data[0], t * v.data[1], t * v.data[2]);
-}
-
-Vector3 Vector3::operator*(double t)
-{
-	return t * v;
-}
-
-Vector3 Vector3::operator/(double t)
-{
-	return (1 / t) * v;
-}
-
 double Vector3::Dot(const Vector3& v) const
 {
 	return data[0] * v.data[0]
@@ -117,7 +87,7 @@ Vector3 Vector3::Cross(const Vector3& v) const
 
 Vector3 Vector3::UnitVector() const
 {
-	return v / v.length();
+	return (*this / GetLength());
 }
 
 double Vector3::GetLength() const
@@ -129,4 +99,4 @@ double Vector3::GetLengthSquared() const
 {
 	return data[0] * data[0] + data[1] * data[1] + data[2] * data[2];
 }
-}  // raytracing
+}  // namespace raytracing
