@@ -4,23 +4,32 @@
 
 using namespace raytracing;
 
-bool hit_sphere(const Vector3& center, double radius, const Ray3& r)
+double hit_sphere(const Vector3& center, double radius, const Ray3& r)
 {
 	Vector3 oc = r.origin - center;
 	auto a = r.direction.Dot(r.direction);
 	auto b = 2.0 * oc.Dot(r.direction);
 	auto c = oc.Dot(oc) - radius * radius;
 	auto discriminant = b * b - 4 * a * c;
-	return (discriminant > 0);
+	if (discriminant < 0) {
+		return -1.0;
+	}
+	else {
+		return (-b - sqrt(discriminant)) / (2.0 * a);
+	}
 }
 
 Vector3 RayColor(const Ray3& r)
 {
-	if (hit_sphere(Vector3(0, 0, -1), 0.5, r))
-		return Vector3(1, 0, 0);
-	Vector3 unit_direction = r.direction.UnitVector();
-	auto t = 0.5 * (unit_direction.y() + 1.0);
-	return (1.0 - t) * Vector3(1.0, 1.0, 1.0) + t * Vector3(0.5, 0.7, 1.0);
+	double h = hit_sphere(Vector3(0, 0, -1), 0.5, r);
+	if (h == -1.0)
+	{
+		Vector3 unit_direction = r.direction.UnitVector();
+		auto t = 0.5 * (unit_direction.y() + 1.0);
+		return (1.0 - t) * Vector3(1.0, 1.0, 1.0) + t * Vector3(0.5, 0.7, 1.0);
+	}
+	Vector3 hit_normal = (r.At(h) - Vector3(0, 0, -1)).UnitVector();
+	return Vector3(0.0, 0.0, hit_normal.z());
 }
 
 void WriteColor(std::ostream& out, const Vector3& pixel_color)
