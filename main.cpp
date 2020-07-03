@@ -1,35 +1,21 @@
 #include <iostream>
 #include <fstream>
-#include "ray3.h"
+#include "sphere.h"
+#include "hittable_list.h"
 
 using namespace raytracing;
 
-double hit_sphere(const Vector3& center, double radius, const Ray3& r)
+Vector3 RayColor(const Ray3& ray, const Hittable& object)
 {
-	Vector3 oc = r.origin - center;
-	auto a = r.direction.Dot(r.direction);
-	auto b = 2.0 * oc.Dot(r.direction);
-	auto c = oc.Dot(oc) - radius * radius;
-	auto discriminant = b * b - 4 * a * c;
-	if (discriminant < 0) {
-		return -1.0;
-	}
-	else {
-		return (-b - sqrt(discriminant)) / (2.0 * a);
-	}
-}
-
-Vector3 RayColor(const Ray3& r)
-{
-	double h = hit_sphere(Vector3(0, 0, -1), 0.5, r);
-	if (h == -1.0)
+	HitRecord hit_record;
+	if (object.Hit(ray, 0.0, 1000.0, hit_record))
 	{
-		Vector3 unit_direction = r.direction.UnitVector();
-		auto t = 0.5 * (unit_direction.y() + 1.0);
-		return (1.0 - t) * Vector3(1.0, 1.0, 1.0) + t * Vector3(0.5, 0.7, 1.0);
+		return 0.5 * (VECTOR3_UNIT_XYZ + hit_record.normal);
 	}
-	Vector3 hit_normal = (r.At(h) - Vector3(0, 0, -1)).UnitVector();
-	return Vector3(0.0, 0.0, hit_normal.z());
+
+	Vector3 unit_direction = ray.direction.UnitVector();
+	double t = 0.5 * (unit_direction.y() + 1.0);
+	return (1.0 - t) * Vector3(1.0, 1.0, 1.0) + t * Vector3(0.5, 0.7, 1.0);
 }
 
 void WriteColor(std::ostream& out, const Vector3& pixel_color)
@@ -41,7 +27,11 @@ void WriteColor(std::ostream& out, const Vector3& pixel_color)
 }
 
 int main()
-{	
+{
+	HittableList world;
+	world.Add(std::make_shared<Sphere>(Vector3(0, 0, -1), 0.5));
+	world.Add(std::make_shared<Sphere>(Vector3(0, -100.5, -1), 100));
+
 	const double aspect_ratio = 16.0 / 9.0;
 	const int image_width = 384;
 	const int image_height = static_cast<int>(image_width / aspect_ratio);
@@ -66,8 +56,8 @@ int main()
 		{
 			auto u = double(x) / (image_width - 1);
 			auto v = double(y) / (image_height - 1);
-			Ray3 r(origin, lower_left_corner + u * horizontal + v * vertical - origin);
-			Vector3 pixel_color = RayColor(r);
+			Ray3 ray(origin, lower_left_corner + u * horizontal + v * vertical - origin);
+			Vector3 pixel_color = RayColor(ray, world);
 			WriteColor(file, pixel_color);
 		}
 	}

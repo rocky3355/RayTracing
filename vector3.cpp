@@ -1,5 +1,5 @@
-#include "vector3.h"
 #include <cmath>
+#include "vector3.h"
 
 namespace raytracing
 {

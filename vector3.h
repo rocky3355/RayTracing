@@ -30,6 +30,10 @@ public:
 	double data[3];
 };
 
+// TODO: Move this inside class
+static const Vector3 VECTOR3_ZERO(0.0, 0.0, 0.0);
+static const Vector3 VECTOR3_UNIT_XYZ(1.0, 1.0, 1.0);
+
 inline std::ostream& operator<<(std::ostream& out, const Vector3& v)
 {
 	return out << v.data[0] << ' ' << v.data[1] << ' ' << v.data[2];
