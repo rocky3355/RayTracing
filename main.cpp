@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <thread>
+#include <chrono>
+#include <string>
 #include "sphere.h"
 #include "camera.h"
 #include "lambertian_material.h"
@@ -10,7 +12,7 @@
 #include "utilities.h"
 
 using namespace raytracing;
-typedef unsigned char byte;
+using namespace std::chrono_literals;
 
 Vector3 RayColor(const Ray3& ray, const Hittable& world, int depth)
 {
@@ -55,10 +57,9 @@ HittableList CreateRandomScene() {
 
 	auto ground_material = std::make_shared<LambertianMaterial>(Vector3(0.5, 0.5, 0.5));
 	world.Add(std::make_shared<Sphere>(Vector3(0, -1000, 0), 1000, ground_material));
-
-	/*
-	for (int a = -11; a < 11; a++) {
-		for (int b = -11; b < 11; b++) {
+	
+	for (int a = -2; a < 2; a++) {
+		for (int b = -2; b < 2; b++) {
 			auto choose_mat = GetRandomDouble();
 			Vector3 center(a + 0.9 * GetRandomDouble(), 0.2, b + 0.9 * GetRandomDouble());
 
@@ -86,36 +87,37 @@ HittableList CreateRandomScene() {
 			}
 		}
 	}
-	*/
+
 	auto material1 = std::make_shared<DielectricMaterial>(1.5);
 	world.Add(std::make_shared<Sphere>(Vector3(0, 1, 0), 1.0, material1));
-
-	auto material2 = std::make_shared<LambertianMaterial>(Vector3(0.4, 0.2, 0.1));
-	world.Add(std::make_shared<Sphere>(Vector3(-4, 1, 0), 1.0, material2));
-
-	auto material3 = std::make_shared<MetalMaterial>(Vector3(0.7, 0.6, 0.5), 0.0);
-	world.Add(std::make_shared<Sphere>(Vector3(4, 1, 0), 1.0, material3));
+	
+	//auto material2 = std::make_shared<LambertianMaterial>(Vector3(0.4, 0.2, 0.1));
+	//world.Add(std::make_shared<Sphere>(Vector3(-4, 1, 0), 1.0, material2));
+	
+	
+	//auto material3 = std::make_shared<MetalMaterial>(Vector3(0.7, 0.6, 0.5), 0.0);
+	//world.Add(std::make_shared<Sphere>(Vector3(4, 1, 0), 1.0, material3));
 
 	return world;
 }
 
 const int max_ray_depth = 50;
-const int samples_per_pixel = 10;
+const int samples_per_pixel = 20;
 constexpr double aspect_ratio = 16.0 / 9.0;
-constexpr int image_width = 200;
+constexpr int image_width = 400;
 constexpr int image_height = static_cast<int>(image_width / aspect_ratio);
 constexpr int number_of_pixels = image_width * image_height;
-const int number_of_threads = 1;
-const int pixels_per_thread = static_cast<int>(std::ceil(number_of_pixels / number_of_threads));
+const int number_of_threads = 8;
+const int pixels_per_thread = static_cast<int>(std::ceil((double)number_of_pixels / number_of_threads));
+int number_of_rendered_pixels = 0;
+bool rendering_finished = false;
 
-void RaytraceImagePart(int thread_id, int start_idx, int end_idx, const Camera& camera, const HittableList& world, byte* image)
+void RaytraceImagePart(int start_idx, int end_idx, const Camera& camera, const HittableList& world, uint8_t* image)
 {
-	std::cout << "Thread " << thread_id << ": Start" << std::endl;
-
 	for (size_t i = start_idx; i <= end_idx; ++i)
 	{
-		int y = i / image_width;
-		int x = i - y * image_width;
+		int y = image_height - i / image_width - 1;
+		int x = i % image_width;
 
 		Vector3 pixel_color;
 
@@ -131,19 +133,31 @@ void RaytraceImagePart(int thread_id, int start_idx, int end_idx, const Camera& 
 		double green = std::sqrt(pixel_color.y() / samples_per_pixel);
 		double blue = std::sqrt(pixel_color.z() / samples_per_pixel);
 
-		// TODO: Why 0.999?
+		// TODO: Why 0.999? Is Clamp really required?
 		int byte_idx = i * 3;
-		image[byte_idx] = static_cast<int>(256 * Clamp(red, 0.0, 0.999));
-		image[byte_idx + 1] = static_cast<int>(256 * Clamp(blue, 0.0, 0.999));
-		image[byte_idx + 2] = static_cast<int>(256 * Clamp(green, 0.0, 0.999));
+		image[byte_idx] = static_cast<uint8_t>(255 * Clamp(red, 0.0, 1.0));
+		image[byte_idx + 1] = static_cast<uint8_t>(255 * Clamp(green, 0.0, 1.0));
+		image[byte_idx + 2] = static_cast<uint8_t>(255 * Clamp(blue, 0.0, 1.0));
 
-		if (i % 1000 == 0)
+		number_of_rendered_pixels++;
+	}
+}
+
+void PrintProgress()
+{
+	int last_percentage = 0;
+	while (!rendering_finished)
+	{
+		int percentage = static_cast<int>(std::round((double)number_of_rendered_pixels / number_of_pixels * 100.0));
+		if (percentage > last_percentage)
 		{
-			std::cout << "Thread " << thread_id << ": " << (i - start_idx) << "/" << number_of_pixels << std::endl;
+			std::cout << percentage << "%, ";
+			last_percentage = percentage;
 		}
+		std::this_thread::sleep_for(100ms);
 	}
 
-	std::cout << "Thread " << thread_id << ": End" << std::endl;
+	std::cout << std::endl;
 }
 
 int main()
@@ -158,27 +172,36 @@ int main()
 	Camera camera(origin, look_at, up, 20.0, aspect_ratio, aperture, dist_to_focus);
 
 	constexpr int number_of_bytes = number_of_pixels * 3;
-	byte* image = new byte[number_of_bytes];
+	uint8_t* image = new uint8_t[number_of_bytes];
 	if (image == nullptr)
 	{
 		std::cout << "Error allocating memory" << std::endl;
 		return -1;
 	}
+
 	std::thread threads[number_of_threads];
 
+	//std::cout << "Total: " << number_of_pixels << std::endl;
 	int start_idx = 0;
 	for (size_t i = 0; i < number_of_threads; ++i)
 	{
 		int end_idx = start_idx + pixels_per_thread;
-		end_idx = end_idx >= number_of_pixels ? number_of_pixels : end_idx;
-		threads[i] = std::thread(RaytraceImagePart, i, start_idx, end_idx, camera, world, image);
+		end_idx = end_idx >= number_of_pixels ? (number_of_pixels - 1) : end_idx;
+		//std::cout << "(" << start_idx << ", " << end_idx << ")\n";
+		threads[i] = std::thread(RaytraceImagePart, start_idx, end_idx, camera, world, image);
 		start_idx = end_idx + 1;
 	}
+
+	std::thread print_thread(PrintProgress);
 
 	for (size_t i = 0; i < number_of_threads; ++i)
 	{
 		threads[i].join();
 	}
+
+	rendering_finished = true;
+	// TODO: Check for joinable?
+	print_thread.join();
 
 	std::ofstream file;
 	file.open("test.ppm");
@@ -186,8 +209,10 @@ int main()
 
 	for (int i = 0; i < number_of_bytes; i += 3)
 	{
-		file << image[i] << ' ' << image[i + 1] << ' ' << image[i + 2] << '\n';
+		file << std::to_string(image[i]) << ' ' << std::to_string(image[i + 1]) << ' ' << std::to_string(image[i + 2]) << '\n';
 	}
+
+	//file.write(reinterpret_cast<char*>(image), number_of_bytes);
 
 	// TODO: delete or delete[]?
 	delete[] image;
@@ -195,7 +220,7 @@ int main()
 	/*
 	for (int y = image_height - 1; y >= 0; --y)
 	{
-		//std::cout << "Scanlines remaining: " << y << std::endl;
+		std::cout << "Scanlines remaining: " << y << std::endl;
 		for (int x = 0; x < image_width; ++x)
 		{
 			Vector3 pixel_color;
