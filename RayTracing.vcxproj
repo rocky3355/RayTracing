@@ -140,14 +140,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="dielectric_material.cpp" />
     <ClCompile Include="hittable_list.cpp" />
+    <ClCompile Include="lambertian_material.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="metal_material.cpp" />
     <ClCompile Include="ray3.cpp" />
     <ClCompile Include="sphere.cpp" />
     <ClCompile Include="vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
+    <ClInclude Include="dielectric_material.h" />
+    <ClInclude Include="lambertian_material.h" />
+    <ClInclude Include="material.h" />
+    <ClInclude Include="metal_material.h" />
     <ClInclude Include="utilities.h" />
     <ClInclude Include="hittable.h" />
     <ClInclude Include="hittable_list.h" />

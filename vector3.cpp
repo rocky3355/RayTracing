@@ -99,4 +99,64 @@ double Vector3::GetLengthSquared() const
 {
 	return data[0] * data[0] + data[1] * data[1] + data[2] * data[2];
 }
+
+Vector3 Vector3::Reflect(const Vector3& v, const Vector3& n)
+{
+	return v - 2 * v.Dot(n) * n;
+}
+
+Vector3 Vector3::Refract(const Vector3& uv, const Vector3& n, double etai_over_etat)
+{
+	auto cos_theta = -uv.Dot(n);
+	Vector3 r_out_parallel = etai_over_etat * (uv + cos_theta * n);
+	Vector3 r_out_perp = -std::sqrt(1.0 - r_out_parallel.GetLengthSquared()) * n;
+	return r_out_parallel + r_out_perp;
+}
+
+Vector3 Vector3::GetRandomInUnitSphere()
+{
+	while (true)
+	{
+		Vector3 p = GetRandom(-1.0, 1.0);
+		if (p.GetLengthSquared() >= 1.0)
+		{
+			continue;
+		}
+		return p;
+	}
+}
+
+Vector3 Vector3::GetRandomUnitVector()
+{
+	double a = GetRandomDouble(0, 2 * std::_Pi);
+	double z = GetRandomDouble(-1.0, 1.0);
+	double r = std::sqrt(1.0 - z * z);
+	return Vector3(r * std::cos(a), r * std::sin(a), z);
+}
+
+Vector3 Vector3::GetRandomInHemisphere(const Vector3& normal)
+{
+	Vector3 in_unit_sphere = GetRandomInUnitSphere();
+	if (in_unit_sphere.Dot(normal) > 0.0)
+	{
+		return in_unit_sphere;
+	}
+	else
+	{
+		return -in_unit_sphere;
+	}
+}
+
+Vector3 Vector3::GetRandomInUnitDisk()
+{
+	while (true)
+	{
+		Vector3 point = Vector3(GetRandomDouble(-1.0, 1.0), GetRandomDouble(-1.0, 1.0), 0.0);
+		if (point.GetLengthSquared() >= 1.0)
+		{
+			continue;
+		}
+		return point;
+	}
+}
 }  // namespace raytracing

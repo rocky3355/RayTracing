@@ -4,8 +4,8 @@ namespace raytracing
 {
 Sphere::Sphere() { }
 
-Sphere::Sphere(Vector3 center, double radius)
-	: center(center), radius(radius)
+Sphere::Sphere(Vector3 center, double radius, std::shared_ptr<Material> material)
+	: center(center), radius(radius), material(material)
 {
 
 }
@@ -29,6 +29,7 @@ bool Sphere::Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_rec
             hit_record.point = ray.At(hit_record.t);
             Vector3 outward_normal = (hit_record.point - center) / radius;
             hit_record.SetFaceNormal(ray, outward_normal);
+            hit_record.material = material;
             return true;
         }
     }

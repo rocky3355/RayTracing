@@ -2,21 +2,33 @@
 
 namespace raytracing
 {
-Camera::Camera()
+Camera::Camera(Vector3 origin, Vector3 look_at, Vector3 up, double vertical_fov, double aspect_ratio, double aperture, double focus_distance)
+    : origin_(origin)
 {
-    auto aspect_ratio = 16.0 / 9.0;
-    auto viewport_height = 2.0;
-    auto viewport_width = aspect_ratio * viewport_height;
-    auto focal_length = 1.0;
+    double theta = DegreesToRadians(vertical_fov);
+    double h = std::tan(theta / 2);
+    double viewport_height = 2.0 * h;
+    double viewport_width = aspect_ratio * viewport_height;
 
-    origin_ = VECTOR3_ZERO;
-    horizontal_ = Vector3(viewport_width, 0.0, 0.0);
-    vertical_ = Vector3(0.0, viewport_height, 0.0);
-    lower_left_corner_ = origin_ - horizontal_ / 2.0 - vertical_ / 2.0 - Vector3(0.0, 0.0, focal_length);
+    Vector3 w = (origin_ - look_at).UnitVector();
+    Vector3 u = up.Cross(w).UnitVector();
+    Vector3 v = w.Cross(u);
+
+    horizontal_ = focus_distance * viewport_width * u;
+    vertical_ = focus_distance * viewport_height * v;
+    lower_left_corner_ = origin_ - horizontal_ / 2 - vertical_ / 2 - focus_distance * w;
+
+    lens_radius_ = aperture / 2.0;
 }
 
 Ray3 Camera::GetRay(double u, double v) const
 {
-    return Ray3(origin_, lower_left_corner_ + u * horizontal_ + v * vertical_ - origin_);
+    Vector3 rd = lens_radius_ * Vector3::GetRandomInUnitDisk();
+    Vector3 offset = u_ * rd.x() + v_ * rd.y();
+
+    return Ray3(
+        origin_ + offset,
+        lower_left_corner_ + u * horizontal_ + v * vertical_ - origin_ - offset
+    );
 }
 }  // namespace raytracing

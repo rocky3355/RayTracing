@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include "utilities.h"
 
 namespace raytracing
 {
@@ -26,6 +27,22 @@ public:
 	double Dot(const Vector3& v) const;
 	Vector3 Cross(const Vector3& v) const;
 	Vector3 UnitVector() const;
+	static Vector3 Reflect(const Vector3& v, const Vector3& n);
+	static Vector3 Refract(const Vector3& uv, const Vector3& n, double etai_over_etat);
+	static Vector3 GetRandomInUnitSphere();
+	static Vector3 GetRandomUnitVector();
+	static Vector3 GetRandomInHemisphere(const Vector3& normal);
+	static Vector3 GetRandomInUnitDisk();
+
+	inline static Vector3 GetRandom()
+	{
+		return Vector3(GetRandomDouble(), GetRandomDouble(), GetRandomDouble());
+	}
+
+	inline static Vector3 GetRandom(double min, double max) 
+	{
+		return Vector3(GetRandomDouble(min, max), GetRandomDouble(min, max), GetRandomDouble(min, max));
+	}
 
 	double data[3];
 };

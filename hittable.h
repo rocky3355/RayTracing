@@ -1,13 +1,18 @@
 #pragma once
 
+#include <memory>
 #include "ray3.h"
 
 namespace raytracing
 {
+
+class Material;
+
 struct HitRecord
 {
 	Vector3 point;
 	Vector3 normal;
+	std::shared_ptr<Material> material;
 	double t;
 	bool front_face;
 
