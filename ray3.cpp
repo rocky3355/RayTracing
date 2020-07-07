@@ -4,8 +4,8 @@ namespace raytracing
 {
 Ray3::Ray3() {}
 
-Ray3::Ray3(const Vector3& origin, const Vector3& direction)
-	: origin(origin), direction(direction)
+Ray3::Ray3(const Vector3& origin, const Vector3& direction, double time)
+	: origin(origin), direction(direction), time(time)
 {
 }
 

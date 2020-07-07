@@ -23,7 +23,7 @@ bool DielectricMaterial::Scatter(const Ray3& ray, const HitRecord& hit_record, V
     double sin_theta = std::sqrt(1.0 - cos_theta * cos_theta);
     if (etai_over_etat * sin_theta > 1.0) {
         Vector3 reflected = Vector3::Reflect(unit_direction, hit_record.normal);
-        scattered = Ray3(hit_record.point, reflected);
+        scattered = Ray3(hit_record.point, reflected, ray.time);
         return true;
     }
 
@@ -31,12 +31,12 @@ bool DielectricMaterial::Scatter(const Ray3& ray, const HitRecord& hit_record, V
     if (GetRandomDouble() < reflect_probability)
     {
         Vector3 reflected = Vector3::Reflect(unit_direction, hit_record.normal);
-        scattered = Ray3(hit_record.point, reflected);
+        scattered = Ray3(hit_record.point, reflected, ray.time);
         return true;
     }
 
     Vector3 refracted = Vector3::Refract(unit_direction, hit_record.normal, etai_over_etat);
-    scattered = Ray3(hit_record.point, refracted);
+    scattered = Ray3(hit_record.point, refracted, ray.time);
     return true;
 }
 

@@ -58,8 +58,8 @@ HittableList CreateRandomScene() {
 	auto ground_material = std::make_shared<LambertianMaterial>(Vector3(0.5, 0.5, 0.5));
 	world.Add(std::make_shared<Sphere>(Vector3(0, -1000, 0), 1000, ground_material));
 	
-	for (int a = -2; a < 2; a++) {
-		for (int b = -2; b < 2; b++) {
+	for (int a = -11; a < 11; a++) {
+		for (int b = -11; b < 11; b++) {
 			auto choose_mat = GetRandomDouble();
 			Vector3 center(a + 0.9 * GetRandomDouble(), 0.2, b + 0.9 * GetRandomDouble());
 
@@ -70,7 +70,7 @@ HittableList CreateRandomScene() {
 					// diffuse
 					auto albedo = Vector3::GetRandom() * Vector3::GetRandom();
 					sphere_material = std::make_shared<LambertianMaterial>(albedo);
-					world.Add(std::make_shared<Sphere>(center, 0.2, sphere_material));
+					world.Add(std::make_shared<Sphere>(center, 0.2, sphere_material, Vector3(0.0, GetRandomDouble() / 2.0, 0.0)));
 				}
 				else if (choose_mat < 0.95) {
 					// metal
@@ -91,20 +91,20 @@ HittableList CreateRandomScene() {
 	auto material1 = std::make_shared<DielectricMaterial>(1.5);
 	world.Add(std::make_shared<Sphere>(Vector3(0, 1, 0), 1.0, material1));
 	
-	//auto material2 = std::make_shared<LambertianMaterial>(Vector3(0.4, 0.2, 0.1));
-	//world.Add(std::make_shared<Sphere>(Vector3(-4, 1, 0), 1.0, material2));
+	auto material2 = std::make_shared<LambertianMaterial>(Vector3(0.4, 0.2, 0.1));
+	world.Add(std::make_shared<Sphere>(Vector3(-4, 1, 0), 1.0, material2));
 	
 	
-	//auto material3 = std::make_shared<MetalMaterial>(Vector3(0.7, 0.6, 0.5), 0.0);
-	//world.Add(std::make_shared<Sphere>(Vector3(4, 1, 0), 1.0, material3));
+	auto material3 = std::make_shared<MetalMaterial>(Vector3(0.7, 0.6, 0.5), 0.0);
+	world.Add(std::make_shared<Sphere>(Vector3(4, 1, 0), 1.0, material3));
 
 	return world;
 }
 
 const int max_ray_depth = 50;
-const int samples_per_pixel = 20;
+const int samples_per_pixel = 50;
 constexpr double aspect_ratio = 16.0 / 9.0;
-constexpr int image_width = 400;
+constexpr int image_width = 600;
 constexpr int image_height = static_cast<int>(image_width / aspect_ratio);
 constexpr int number_of_pixels = image_width * image_height;
 const int number_of_threads = 8;
@@ -169,7 +169,7 @@ int main()
 	Vector3 up(0, 1, 0);
 	auto dist_to_focus = 10.0;
 	auto aperture = 0.1;
-	Camera camera(origin, look_at, up, 20.0, aspect_ratio, aperture, dist_to_focus);
+	Camera camera(origin, look_at, up, 20.0, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
 
 	constexpr int number_of_bytes = number_of_pixels * 3;
 	uint8_t* image = new uint8_t[number_of_bytes];
@@ -179,15 +179,13 @@ int main()
 		return -1;
 	}
 
+	int start_idx = 0;
 	std::thread threads[number_of_threads];
 
-	//std::cout << "Total: " << number_of_pixels << std::endl;
-	int start_idx = 0;
 	for (size_t i = 0; i < number_of_threads; ++i)
 	{
 		int end_idx = start_idx + pixels_per_thread;
 		end_idx = end_idx >= number_of_pixels ? (number_of_pixels - 1) : end_idx;
-		//std::cout << "(" << start_idx << ", " << end_idx << ")\n";
 		threads[i] = std::thread(RaytraceImagePart, start_idx, end_idx, camera, world, image);
 		start_idx = end_idx + 1;
 	}
@@ -205,13 +203,13 @@ int main()
 
 	std::ofstream file;
 	file.open("test.ppm");
+	// TODO: Use P6 format
 	file << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
 	for (int i = 0; i < number_of_bytes; i += 3)
 	{
 		file << std::to_string(image[i]) << ' ' << std::to_string(image[i + 1]) << ' ' << std::to_string(image[i + 2]) << '\n';
 	}
-
 	//file.write(reinterpret_cast<char*>(image), number_of_bytes);
 
 	// TODO: delete or delete[]?

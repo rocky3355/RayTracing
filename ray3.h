@@ -8,12 +8,13 @@ class Ray3
 {
 public:
 	Ray3();
-	Ray3(const Vector3& origin, const Vector3& direction);
+	Ray3(const Vector3& origin, const Vector3& direction, double time);
 
 	Vector3 At(double t) const;
 
 	Vector3 origin;
 	Vector3 direction;
+	double time;
 };
 }  // namespace raytracing
 
