@@ -142,33 +142,35 @@
     <ClCompile Include="aabb.cpp" />
     <ClCompile Include="bhv_node.cpp" />
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="checker_texture.cpp" />
     <ClCompile Include="dielectric_material.cpp" />
     <ClCompile Include="hittable_list.cpp" />
     <ClCompile Include="lambertian_material.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="metal_material.cpp" />
     <ClCompile Include="ray3.cpp" />
+    <ClCompile Include="solid_color.cpp" />
     <ClCompile Include="sphere.cpp" />
+    <ClCompile Include="texture.cpp" />
     <ClCompile Include="vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="aabb.h" />
     <ClInclude Include="bhv_node.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="checker_texture.h" />
     <ClInclude Include="dielectric_material.h" />
     <ClInclude Include="lambertian_material.h" />
     <ClInclude Include="material.h" />
     <ClInclude Include="metal_material.h" />
+    <ClInclude Include="solid_color.h" />
+    <ClInclude Include="texture.h" />
     <ClInclude Include="utilities.h" />
     <ClInclude Include="hittable.h" />
     <ClInclude Include="hittable_list.h" />
     <ClInclude Include="ray3.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="sphere.h" />
     <ClInclude Include="vector3.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="RayTracing.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

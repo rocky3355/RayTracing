@@ -2,7 +2,7 @@
 
 namespace raytracing
 {
-LambertianMaterial:: LambertianMaterial(const Vector3& albedo)
+LambertianMaterial:: LambertianMaterial(std::shared_ptr<Texture> albedo)
 	: albedo_(albedo)
 {
 }
@@ -11,7 +11,7 @@ bool LambertianMaterial::Scatter(const Ray3& ray, const HitRecord& hit_record, V
 {
     Vector3 scatter_direction = hit_record.normal + Vector3::GetRandomUnitVector();
     scattered = Ray3(hit_record.point, scatter_direction, ray.time);
-    attenuation = albedo_;
+    attenuation = albedo_->GetColor(hit_record.u, hit_record.v, hit_record.point);
     return true;
 }
 }  // namespace raytracing

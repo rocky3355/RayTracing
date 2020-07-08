@@ -30,6 +30,7 @@ bool Sphere::Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_rec
             Vector3 outward_normal = (hit_record.point - timed_origin) / radius_;
             hit_record.SetFaceNormal(ray, outward_normal);
             hit_record.material = material;
+            GetTextureCoordinates((hit_record.point - origin_) / radius_, hit_record.u, hit_record.v);
             return true;
         }
     }
@@ -47,5 +48,13 @@ bool Sphere::CreateBoundingBox(double t_end, AABB& bounding_box) const
 
     bounding_box = AABB::GetSurroundingBox(box0, box1);
     return true;
+}
+
+void Sphere::GetTextureCoordinates(const Vector3& p, double& u, double& v) const
+{
+    double phi = std::atan2(p.z(), p.x());
+    double theta = std::asin(p.y());
+    u = 1 - (phi + M_PI) / (2 * M_PI);
+    v = (theta + M_PI / 2) / M_PI;
 }
 }  // namespace raytracing

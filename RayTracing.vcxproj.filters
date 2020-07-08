@@ -48,6 +48,15 @@
     <ClCompile Include="bhv_node.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="solid_color.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="checker_texture.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vector3.h">
@@ -60,9 +69,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="hittable.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="hittable_list.h">
@@ -92,10 +98,14 @@
     <ClInclude Include="bhv_node.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="RayTracing.rc">
-      <Filter>Ressourcendateien</Filter>
-    </ResourceCompile>
+    <ClInclude Include="texture.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="solid_color.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="checker_texture.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -17,21 +17,6 @@ Vector3::Vector3(double x, double y, double z)
 	data[2] = z;
 }
 
-double Vector3::x() const
-{
-	return data[0];
-}
-
-double Vector3::y() const
-{
-	return data[1];
-}
-
-double Vector3::z() const
-{
-	return data[2];
-}
-
 Vector3 Vector3::operator-() const
 {
 	return Vector3(-data[0], -data[1], -data[2]);

@@ -6,6 +6,8 @@
 #include "bhv_node.h"
 #include "sphere.h"
 #include "camera.h"
+#include "checker_texture.h"
+#include "solid_color.h"
 #include "lambertian_material.h"
 #include "dielectric_material.h"
 #include "metal_material.h"
@@ -55,7 +57,11 @@ void WriteColor(std::ostream& out, const Vector3& pixel_color, int samples_per_p
 HittableList CreateRandomScene() {
 	HittableList world;
 
-	auto ground_material = std::make_shared<LambertianMaterial>(Vector3(0.5, 0.5, 0.5));
+	std::shared_ptr<CheckerTexture> checker_texture = std::make_shared<CheckerTexture>(
+		std::make_shared<SolidColor>(Vector3(0.2, 0.3, 0.1)),
+		std::make_shared<SolidColor>(Vector3(0.9, 0.9, 0.9)));
+
+	auto ground_material = std::make_shared<LambertianMaterial>(checker_texture);
 	world.Add(std::make_shared<Sphere>(Vector3(0, -1000, 0), 1000, ground_material));
 	
 	for (int a = -11; a < 11; a++) {
@@ -69,8 +75,8 @@ HittableList CreateRandomScene() {
 				if (choose_mat < 0.8) {
 					// diffuse
 					auto albedo = Vector3::GetRandom() * Vector3::GetRandom();
-					sphere_material = std::make_shared<LambertianMaterial>(albedo);
-					world.Add(std::make_shared<Sphere>(center, 0.2, sphere_material, Vector3(0.0, GetRandomDouble() / 2.0, 0.0)));
+					sphere_material = std::make_shared<LambertianMaterial>(std::make_shared<SolidColor>(albedo));
+					world.Add(std::make_shared<Sphere>(center, 0.2, sphere_material, Vector3(0.0, 0.0, 0.0)));
 				}
 				else if (choose_mat < 0.95) {
 					// metal
@@ -91,7 +97,7 @@ HittableList CreateRandomScene() {
 	auto material1 = std::make_shared<DielectricMaterial>(1.5);
 	world.Add(std::make_shared<Sphere>(Vector3(0, 1, 0), 1.0, material1));
 	
-	auto material2 = std::make_shared<LambertianMaterial>(Vector3(0.4, 0.2, 0.1));
+	auto material2 = std::make_shared<LambertianMaterial>(std::make_shared<SolidColor>(Vector3(0.4, 0.2, 0.1)));
 	world.Add(std::make_shared<Sphere>(Vector3(-4, 1, 0), 1.0, material2));
 	
 	
@@ -102,9 +108,9 @@ HittableList CreateRandomScene() {
 }
 
 const int max_ray_depth = 50;
-const int samples_per_pixel = 20;
+const int samples_per_pixel = 50;
 constexpr double aspect_ratio = 16.0 / 9.0;
-constexpr int image_width = 400;
+constexpr int image_width = 600;
 constexpr int image_height = static_cast<int>(image_width / aspect_ratio);
 constexpr int number_of_pixels = image_width * image_height;
 const int number_of_threads = 8;

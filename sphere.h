@@ -14,6 +14,7 @@ public:
 	std::shared_ptr<Material> material;
 
 private:
+	void GetTextureCoordinates(const Vector3& p, double& u, double& v) const;
 	Vector3 origin_;
 	double radius_;
 	Vector3 velocity_;

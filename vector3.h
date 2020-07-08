@@ -10,10 +10,6 @@ class Vector3
 public:
 	Vector3();
 	Vector3(double x, double y, double z);
-
-	double x() const;
-	double y() const;
-	double z() const;
 	Vector3 operator-() const;
 	double operator[](int idx) const;
 	double& operator[](int idx);
@@ -22,6 +18,9 @@ public:
 	Vector3& operator/=(const double t);
 
 	// TODO: Inline?
+	inline double x() const { return data[0]; }
+	inline double y() const { return data[1]; }
+	inline double z() const { return data[2]; }
 	double GetLength() const;
 	double GetLengthSquared() const;
 	double Dot(const Vector3& v) const;
