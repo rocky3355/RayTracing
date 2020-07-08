@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "ray3.h"
+#include "aabb.h"
 
 namespace raytracing
 {
@@ -27,5 +27,6 @@ class Hittable
 {
 public:
 	virtual bool Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_record) const = 0;
+    virtual bool CreateBoundingBox(double t_end, AABB& bounding_box) const = 0;
 };
 }  // namespace raytracing

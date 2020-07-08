@@ -3,12 +3,12 @@
 #include <thread>
 #include <chrono>
 #include <string>
+#include "bhv_node.h"
 #include "sphere.h"
 #include "camera.h"
 #include "lambertian_material.h"
 #include "dielectric_material.h"
 #include "metal_material.h"
-#include "hittable_list.h"
 #include "utilities.h"
 
 using namespace raytracing;
@@ -102,9 +102,9 @@ HittableList CreateRandomScene() {
 }
 
 const int max_ray_depth = 50;
-const int samples_per_pixel = 50;
+const int samples_per_pixel = 20;
 constexpr double aspect_ratio = 16.0 / 9.0;
-constexpr int image_width = 600;
+constexpr int image_width = 400;
 constexpr int image_height = static_cast<int>(image_width / aspect_ratio);
 constexpr int number_of_pixels = image_width * image_height;
 const int number_of_threads = 8;
@@ -112,7 +112,7 @@ const int pixels_per_thread = static_cast<int>(std::ceil((double)number_of_pixel
 int number_of_rendered_pixels = 0;
 bool rendering_finished = false;
 
-void RaytraceImagePart(int start_idx, int end_idx, const Camera& camera, const HittableList& world, uint8_t* image)
+void RaytraceImagePart(int start_idx, int end_idx, const Camera& camera, const BhvNode& world, uint8_t* image)
 {
 	for (size_t i = start_idx; i <= end_idx; ++i)
 	{
@@ -162,14 +162,16 @@ void PrintProgress()
 
 int main()
 {
-	HittableList world = CreateRandomScene();
-
+	double time_end = 1.0;
 	Vector3 origin(13, 2, 3);
 	Vector3 look_at(0, 0, 0);
 	Vector3 up(0, 1, 0);
 	auto dist_to_focus = 10.0;
 	auto aperture = 0.1;
-	Camera camera(origin, look_at, up, 20.0, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
+	Camera camera(origin, look_at, up, 20.0, aspect_ratio, aperture, dist_to_focus, time_end);
+
+	HittableList world_list = CreateRandomScene();
+	BhvNode world = BhvNode(world_list, time_end);
 
 	constexpr int number_of_bytes = number_of_pixels * 3;
 	uint8_t* image = new uint8_t[number_of_bytes];
@@ -181,6 +183,8 @@ int main()
 
 	int start_idx = 0;
 	std::thread threads[number_of_threads];
+
+	auto start = std::chrono::high_resolution_clock::now();
 
 	for (size_t i = 0; i < number_of_threads; ++i)
 	{
@@ -196,6 +200,11 @@ int main()
 	{
 		threads[i].join();
 	}
+
+	std::chrono::duration<double> elapsed = std::chrono::high_resolution_clock::now() - start;
+	std::cout << "\n\nElapsed: " << elapsed.count() << "s\n";
+
+	// 197s, 35s with BhvNode
 
 	rendering_finished = true;
 	// TODO: Check for joinable?

@@ -36,4 +36,16 @@ bool Sphere::Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_rec
 
     return false;
 }
+
+bool Sphere::CreateBoundingBox(double t_end, AABB& bounding_box) const
+{
+    Vector3 origin_end = origin_ + velocity_ * t_end;
+    Vector3 radius_vec(radius_, radius_, radius_);
+
+    AABB box0(origin_ - radius_vec, origin_ + radius_vec);
+    AABB box1(origin_end - radius_vec, origin_end + radius_vec);
+
+    bounding_box = AABB::GetSurroundingBox(box0, box1);
+    return true;
+}
 }  // namespace raytracing

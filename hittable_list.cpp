@@ -37,4 +37,27 @@ bool HittableList::Hit(const Ray3& ray, double t_min, double t_max, HitRecord& h
 
     return hit_anything;
 }
+
+bool HittableList::CreateBoundingBox(double t_end, AABB& bounding_box) const
+{
+    if (objects.empty())
+    {
+        return false;
+    }
+
+    AABB temp_box;
+    bool is_first_box = true;
+
+    for (const std::shared_ptr<Hittable>& object : objects)
+    {
+        if (!object->CreateBoundingBox(t_end, temp_box))
+        {
+            return false;
+        }
+        bounding_box = is_first_box ? temp_box : AABB::GetSurroundingBox(bounding_box, temp_box);
+        is_first_box = false;
+    }
+
+    return true;
+}
 } // namespace raytracing

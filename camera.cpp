@@ -2,8 +2,8 @@
 
 namespace raytracing
 {
-Camera::Camera(Vector3 origin, Vector3 look_at, Vector3 up, double vertical_fov, double aspect_ratio, double aperture, double focus_distance, double time_start, double time_end)
-    : origin_(origin), time_start_(time_start), time_end_(time_end)
+Camera::Camera(Vector3 origin, Vector3 look_at, Vector3 up, double vertical_fov, double aspect_ratio, double aperture, double focus_distance, double time_end)
+    : origin_(origin), time_end_(time_end)
 {
     double theta = DegreesToRadians(vertical_fov);
     double h = std::tan(theta / 2);
@@ -29,7 +29,7 @@ Ray3 Camera::GetRay(double u, double v) const
     return Ray3(
         origin_ + offset,
         lower_left_corner_ + u * horizontal_ + v * vertical_ - origin_ - offset,
-        GetRandomDouble(time_start_, time_end_)
+        GetRandomDouble(0.0, time_end_)
     );
 }
 }  // namespace raytracing

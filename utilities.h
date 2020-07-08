@@ -1,5 +1,5 @@
 #pragma once
-
+#include <cmath>
 #include <limits>
 #include <random>
 
@@ -25,5 +25,5 @@ inline double Clamp(double x, double min, double max)
 
 inline double DegreesToRadians(double value)
 {
-    return value / 180.0 * std::_Pi;
+    return value / 180.0 * M_PI;
 }

@@ -1,5 +1,4 @@
 #pragma once
-
 #include "hittable.h"
 
 namespace raytracing
@@ -10,6 +9,8 @@ public:
 	Sphere();
 	Sphere(Vector3 center, double radius, std::shared_ptr<Material> material, const Vector3& velocity = VECTOR3_ZERO);
 	virtual bool Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_record) const;
+    virtual bool CreateBoundingBox(double t_end, AABB& bounding_box) const;
+
 	std::shared_ptr<Material> material;
 
 private:
