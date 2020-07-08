@@ -1,17 +1,17 @@
 #pragma once
 
+#include "perlin.h"
 #include "texture.h"
 
 namespace raytracing
 {
-class SolidColor : public Texture
-{
+class NoiseTexture : public Texture {
 public:
-    SolidColor(Vector3 color);
-    SolidColor(double red, double green, double blue);
+    NoiseTexture(double scale = 1.0);
     virtual Vector3 GetColor(double u, double v, const Vector3& p) const;
 
 private:
-    Vector3 color_;
+    double scale_;
+    Perlin perlin_;
 };
 }  // namespace raytracing

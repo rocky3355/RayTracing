@@ -15,8 +15,7 @@ BhvNode::BhvNode(HittableList& list, double time_end)
 
 BhvNode::BhvNode(std::vector<std::shared_ptr<Hittable>>& objects, size_t start, size_t end, double time_end)
 {
-    // TODO: Check if this is working and move to utilities
-    int axis = std::round(GetRandomDouble() * 2);
+    int axis = GetRandomInt(2);
     auto comparator = (axis == 0) ? &BhvNode::BoxXCompare : (axis == 1) ? &BhvNode::BoxYCompare : &BhvNode::BoxZCompare;
 
     size_t object_span = end - start;

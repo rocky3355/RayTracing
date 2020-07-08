@@ -2,10 +2,6 @@
 
 namespace raytracing
 {
-SolidColor::SolidColor()
-{
-}
-
 SolidColor::SolidColor(Vector3 color)
     : color_(color)
 {

@@ -6,38 +6,50 @@
 #include "bhv_node.h"
 #include "sphere.h"
 #include "camera.h"
+#include "diffuse_light.h"
 #include "checker_texture.h"
+#include "noise_texture.h"
+#include "image_texure.h"
 #include "solid_color.h"
 #include "lambertian_material.h"
 #include "dielectric_material.h"
 #include "metal_material.h"
 #include "utilities.h"
+#include "aa_rect.h"
+#include "flip_face.h"
+#include "box.h"
 
 using namespace raytracing;
 using namespace std::chrono_literals;
 
-Vector3 RayColor(const Ray3& ray, const Hittable& world, int depth)
+// TODO: Remove unnecessary empty constructors
+
+Vector3 RayColor(const Ray3& ray, const Vector3& background, const Hittable& world, int depth)
 {
-	if (depth == 0)
-	{
-		return VECTOR3_ZERO;
-	}
-
 	HitRecord hit_record;
-	if (world.Hit(ray, 0.001, 1000.0, hit_record))
+
+	// TODO: == 0?
+	if (depth <= 0)
 	{
-		Ray3 scattered;
-		Vector3 attenuation;
-		if (hit_record.material->Scatter(ray, hit_record, attenuation, scattered))
-		{
-			return attenuation * RayColor(scattered, world, depth - 1);
-		}
 		return VECTOR3_ZERO;
 	}
 
-	Vector3 unit_direction = ray.direction.UnitVector();
-	double t = 0.5 * (unit_direction.y() + 1.0);
-	return (1.0 - t) * Vector3(1.0, 1.0, 1.0) + t * Vector3(0.5, 0.7, 1.0);
+	// TODO: Infinity instead of 10000
+	if (!world.Hit(ray, 0.001, 100000.0, hit_record))
+	{
+		return background;
+	}
+
+	Ray3 scattered;
+	Vector3 attenuation;
+	Vector3 emitted = hit_record.material->Emit(hit_record.u, hit_record.v, hit_record.point);
+
+	if (!hit_record.material->Scatter(ray, hit_record, attenuation, scattered))
+	{
+		return emitted;
+	}
+
+	return emitted + attenuation * RayColor(scattered, background, world, depth - 1);
 }
 
 /*
@@ -107,10 +119,64 @@ HittableList CreateRandomScene() {
 	return world;
 }
 
+HittableList TwoPerlinSpheres()
+{
+	HittableList objects;
+	auto pertext = std::make_shared<NoiseTexture>(5.0);
+	objects.Add(std::make_shared<Sphere>(Vector3(0, -1000, 0), 1000, std::make_shared<LambertianMaterial>(pertext)));
+	objects.Add(std::make_shared<Sphere>(Vector3(0, 2, 0), 2, std::make_shared<LambertianMaterial>(pertext)));
+	return objects;
+}
+
+HittableList Earth()
+{
+	auto earth_texture = std::make_shared<ImageTexture>("earthmap.jpg");
+	auto earth_surface = std::make_shared<LambertianMaterial>(earth_texture);
+	auto globe = std::make_shared<Sphere>(VECTOR3_ZERO, 2.0, earth_surface);
+	return HittableList(globe);
+}
+
+HittableList SimpleLight()
+{
+	HittableList objects;
+
+	auto pertext = std::make_shared<NoiseTexture>(4.0);
+	objects.Add(std::make_shared<Sphere>(Vector3(0, -1000, 0), 1000, std::make_shared<LambertianMaterial>(pertext)));
+	objects.Add(std::make_shared<Sphere>(Vector3(0, 2, 0), 2, std::make_shared<LambertianMaterial>(pertext)));
+
+	auto difflight = std::make_shared<DiffuseLight>(std::make_shared<SolidColor>(4, 4, 4));
+	objects.Add(std::make_shared<Sphere>(Vector3(0, 7, 0), 2, difflight));
+	objects.Add(std::make_shared<XYRect>(3.0, 5.0, 1.0, 3.0, -2.0, difflight));
+
+	return objects;
+}
+
+HittableList CornellBox()
+{
+	HittableList objects;
+
+	auto red = std::make_shared<LambertianMaterial>(std::make_shared<SolidColor>(.65, .05, .05));
+	auto white = std::make_shared<LambertianMaterial>(std::make_shared<SolidColor>(.73, .73, .73));
+	auto green = std::make_shared<LambertianMaterial>(std::make_shared<SolidColor>(.12, .45, .15));
+	auto light = std::make_shared<DiffuseLight>(std::make_shared<SolidColor>(15, 15, 15));
+
+	objects.Add(std::make_shared<FlipFace>(std::make_shared<YZRect>(0, 555, 0, 555, 555, green)));
+	objects.Add(std::make_shared<YZRect>(0, 555, 0, 555, 0, red));
+	objects.Add(std::make_shared<XZRect>(213, 343, 227, 332, 554, light));
+	objects.Add(std::make_shared<FlipFace>(std::make_shared<XZRect>(0, 555, 0, 555, 0, white)));
+	objects.Add(std::make_shared<XZRect>(0, 555, 0, 555, 555, white));
+	objects.Add(std::make_shared<FlipFace>(std::make_shared<XYRect>(0, 555, 0, 555, 555, white)));
+
+	objects.Add(std::make_shared<Box>(Vector3(130, 0, 65), Vector3(295, 165, 230), white));
+	objects.Add(std::make_shared<Box>(Vector3(265, 0, 295), Vector3(430, 330, 460), white));
+
+	return objects;
+}
+
 const int max_ray_depth = 50;
 const int samples_per_pixel = 50;
 constexpr double aspect_ratio = 16.0 / 9.0;
-constexpr int image_width = 600;
+constexpr int image_width = 800;
 constexpr int image_height = static_cast<int>(image_width / aspect_ratio);
 constexpr int number_of_pixels = image_width * image_height;
 const int number_of_threads = 8;
@@ -132,7 +198,7 @@ void RaytraceImagePart(int start_idx, int end_idx, const Camera& camera, const B
 			double u = (x + GetRandomDouble()) / (image_width - 1);
 			double v = (y + GetRandomDouble()) / (image_height - 1);
 			Ray3 ray = camera.GetRay(u, v);
-			pixel_color += RayColor(ray, world, max_ray_depth);
+			pixel_color += RayColor(ray, VECTOR3_ZERO, world, max_ray_depth);
 		}
 
 		double red = std::sqrt(pixel_color.x() / samples_per_pixel);
@@ -169,14 +235,15 @@ void PrintProgress()
 int main()
 {
 	double time_end = 1.0;
-	Vector3 origin(13, 2, 3);
-	Vector3 look_at(0, 0, 0);
+	Vector3 origin(278, 278, -800);
+	Vector3 look_at(278, 278, 0);
 	Vector3 up(0, 1, 0);
-	auto dist_to_focus = 10.0;
-	auto aperture = 0.1;
-	Camera camera(origin, look_at, up, 20.0, aspect_ratio, aperture, dist_to_focus, time_end);
+	double dist_to_focus = 10.0;
+	double aperture = 0.0;
+	double vertical_fov = 40.0;
+	Camera camera(origin, look_at, up, vertical_fov, aspect_ratio, aperture, dist_to_focus, time_end);
 
-	HittableList world_list = CreateRandomScene();
+	HittableList world_list = SimpleLight();
 	BhvNode world = BhvNode(world_list, time_end);
 
 	constexpr int number_of_bytes = number_of_pixels * 3;

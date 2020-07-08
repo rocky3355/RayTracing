@@ -16,6 +16,12 @@ inline double GetRandomDouble(double min, double max) {
     return min + (max - min) * GetRandomDouble();
 }
 
+// TODO: Check if this is working
+inline int GetRandomInt(int max)
+{
+    return static_cast<int>(std::round(GetRandomDouble() * max));
+}
+
 inline double Clamp(double x, double min, double max)
 {
     if (x < min) return min;
