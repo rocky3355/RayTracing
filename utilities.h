@@ -3,8 +3,11 @@
 #include <limits>
 #include <random>
 
+namespace raytracing
+{
 const double Infinity = std::numeric_limits<double>::infinity();
 
+// TODO: all inline?
 inline double GetRandomDouble() {
     static std::uniform_real_distribution<double> distribution(0.0, 1.0);
     static std::mt19937 generator;
@@ -33,3 +36,4 @@ inline double DegreesToRadians(double value)
 {
     return value / 180.0 * M_PI;
 }
+}  // namespace raytracing

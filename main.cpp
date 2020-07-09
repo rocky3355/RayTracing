@@ -21,11 +21,15 @@
 #include "translation.h"
 #include "rotation.h"
 #include "constant_medium.h"
+#include "pdf.h"
+
+// TODO: Rename BHV to BVH
+// TODO: define "Color" as Vector3
+// TODO: Remove unnecessary empty constructors
+// TODO: Rename attenuation to albedo?
 
 using namespace raytracing;
 using namespace std::chrono_literals;
-
-// TODO: Remove unnecessary empty constructors
 
 Vector3 RayColor(const Ray3& ray, const Vector3& background, const Hittable& world, int depth)
 {
@@ -37,27 +41,48 @@ Vector3 RayColor(const Ray3& ray, const Vector3& background, const Hittable& wor
 		return VECTOR3_ZERO;
 	}
 
-	// TODO: Infinity instead of 10000
-	if (!world.Hit(ray, 0.001, 100000.0, hit_record))
+	if (!world.Hit(ray, 0.001, Infinity, hit_record))
 	{
-		/*
-		Vector3 unit_direction = ray.direction.UnitVector();
-		auto t = 0.5 * (unit_direction.y() + 1.0);
-		return (1.0 - t) * Vector3(1.0, 1.0, 1.0) + t * Vector3(0.5, 0.7, 1.0);
-		*/
 		return background;
 	}
 
+	double pdf;
 	Ray3 scattered;
-	Vector3 attenuation;
-	Vector3 emitted = hit_record.material->Emit(hit_record.u, hit_record.v, hit_record.point);
+	Vector3 albedo;
+	Vector3 emitted = hit_record.material->Emit(ray, hit_record);
 
-	if (!hit_record.material->Scatter(ray, hit_record, attenuation, scattered))
+	if (!hit_record.material->Scatter(ray, hit_record, albedo, scattered, pdf))
 	{
 		return emitted;
 	}
-	
-	return emitted + attenuation * RayColor(scattered, background, world, depth - 1);
+
+	CosinePdf p(hit_record.normal);
+	scattered = Ray3(hit_record.point, p.Generate(), ray.time);
+	double pdf_val = p.Value(scattered.direction);
+
+	/*
+	Vector3 on_light = Vector3(GetRandomDouble(213, 343), 554, GetRandomDouble(227, 332));
+	Vector3 to_light = on_light - hit_record.point;
+	double distance_squared = to_light.GetLengthSquared();
+	to_light = to_light.UnitVector();
+
+	if (to_light.Dot(hit_record.normal) < 0)
+	{
+		return emitted;
+	}
+
+	double light_area = (343 - 213) * (332 - 227);
+	double light_cosine = std::fabs(to_light.y());
+	if (light_cosine < 0.000001)
+	{
+		return emitted;
+	}
+
+	pdf = distance_squared / (light_cosine * light_area);
+	scattered = Ray3(hit_record.point, to_light, ray.time);
+	*/
+	return emitted + albedo * hit_record.material->ScatterPdf(ray, hit_record, scattered)
+							* RayColor(scattered, background, world, depth - 1) / pdf_val;
 }
 
 HittableList CreateRandomScene()
@@ -157,7 +182,7 @@ HittableList CornellBox()
 
 	objects.Add(std::make_shared<FlipFace>(std::make_shared<YZRect>(0, 555, 0, 555, 555, green)));
 	objects.Add(std::make_shared<YZRect>(0, 555, 0, 555, 0, red));
-	objects.Add(std::make_shared<XZRect>(213, 343, 227, 332, 554, light));
+	objects.Add(std::make_shared<FlipFace>(std::make_shared<XZRect>(213, 343, 227, 332, 554, light)));
 	objects.Add(std::make_shared<FlipFace>(std::make_shared<XZRect>(0, 555, 0, 555, 0, white)));
 	objects.Add(std::make_shared<XZRect>(0, 555, 0, 555, 555, white));
 	objects.Add(std::make_shared<FlipFace>(std::make_shared<XYRect>(0, 555, 0, 555, 555, white)));
@@ -165,21 +190,91 @@ HittableList CornellBox()
 	std::shared_ptr<Hittable> box1 = std::make_shared<Box>(VECTOR3_ZERO, Vector3(165, 330, 165), white);
 	box1 = std::make_shared<RotationY>(box1, 15);
 	box1 = std::make_shared<Translation>(box1, Vector3(265, 0, 295));
+	objects.Add(box1);
 
 	std::shared_ptr<Hittable> box2 = std::make_shared<Box>(VECTOR3_ZERO, Vector3(165, 165, 165), white);
 	box2 = std::make_shared<RotationY>(box2, -18);
 	box2 = std::make_shared<Translation>(box2, Vector3(130, 0, 65));
+	objects.Add(box2);
 
-	objects.Add(std::make_shared<ConstantMedium>(box1, 0.01, std::make_shared<SolidColor>(0, 0, 0)));
-	objects.Add(std::make_shared<ConstantMedium>(box2, 0.01, std::make_shared<SolidColor>(1, 1, 1)));
+	return objects;
+}
+
+HittableList FinalSceneChapterTwo()
+{
+	HittableList boxes1;
+	auto ground = std::make_shared<LambertianMaterial>(std::make_shared<SolidColor>(0.48, 0.83, 0.53));
+
+	const int boxes_per_side = 20;
+	for (int i = 0; i < boxes_per_side; ++i)
+	{
+		for (int j = 0; j < boxes_per_side; ++j)
+		{
+			auto w = 100.0;
+			auto x0 = -1000.0 + i * w;
+			auto z0 = -1000.0 + j * w;
+			auto y0 = 0.0;
+			auto x1 = x0 + w;
+			auto y1 = GetRandomDouble(1, 101);
+			auto z1 = z0 + w;
+
+			boxes1.Add(std::make_shared<Box>(Vector3(x0, y0, z0), Vector3(x1, y1, z1), ground));
+		}
+	}
+
+	HittableList objects;
+
+	objects.Add(std::make_shared<BhvNode>(boxes1, 1.0));
+
+	auto light = std::make_shared<DiffuseLight>(std::make_shared<SolidColor>(7, 7, 7));
+	objects.Add(std::make_shared<XZRect>(123, 423, 147, 412, 554, light));
+
+	auto center1 = Vector3(400, 400, 200);
+	//auto center2 = center1 + Vector3(30, 0, 0);
+	auto moving_sphere_material =
+		std::make_shared<LambertianMaterial>(std::make_shared<SolidColor>(0.7, 0.3, 0.1));
+	objects.Add(std::make_shared<Sphere>(center1, 50, moving_sphere_material, Vector3(30, 0, 0)));
+
+	objects.Add(std::make_shared<Sphere>(Vector3(260, 150, 45), 50, std::make_shared<DielectricMaterial>(1.5)));
+	objects.Add(std::make_shared<Sphere>(
+		Vector3(0, 150, 145), 50, std::make_shared<MetalMaterial>(Vector3(0.8, 0.8, 0.9), 10.0)
+		));
+
+	auto boundary = std::make_shared<Sphere>(Vector3(360, 150, 145), 70, std::make_shared<DielectricMaterial>(1.5));
+	objects.Add(boundary);
+	objects.Add(std::make_shared<ConstantMedium>(
+		boundary, 0.2, std::make_shared<SolidColor>(0.2, 0.4, 0.9)
+		));
+	boundary = std::make_shared<Sphere>(Vector3(0, 0, 0), 5000, std::make_shared<DielectricMaterial>(1.5));
+	objects.Add(std::make_shared<ConstantMedium>(
+		boundary, .0001, std::make_shared<SolidColor>(1, 1, 1)));
+
+	auto emat = std::make_shared<LambertianMaterial>(std::make_shared<ImageTexture>("earthmap.jpg"));
+	objects.Add(std::make_shared<Sphere>(Vector3(400, 200, 400), 100, emat));
+	auto pertext = std::make_shared<NoiseTexture>(0.1);
+	objects.Add(std::make_shared<Sphere>(Vector3(220, 280, 300), 80, std::make_shared<LambertianMaterial>(pertext)));
+
+	HittableList boxes2;
+	auto white = std::make_shared<LambertianMaterial>(std::make_shared<SolidColor>(.73, .73, .73));
+	int ns = 1000;
+	for (int j = 0; j < ns; j++) {
+		boxes2.Add(std::make_shared<Sphere>(Vector3::GetRandom(0, 165), 10, white));
+	}
+
+	objects.Add(std::make_shared<Translation>(
+		std::make_shared<RotationY>(
+			std::make_shared<BhvNode>(boxes2, 1.0), 15),
+		Vector3(-100, 270, 395)
+		)
+	);
 
 	return objects;
 }
 
 const int max_ray_depth = 50;
-const int samples_per_pixel = 20;
-constexpr double aspect_ratio = 16.0 / 9.0;
-constexpr int image_width = 400;
+const int samples_per_pixel = 2000;
+constexpr double aspect_ratio = 1.0 / 1.0;
+constexpr int image_width = 300;
 constexpr int image_height = static_cast<int>(image_width / aspect_ratio);
 constexpr int number_of_pixels = image_width * image_height;
 const int number_of_threads = 8;

@@ -43,6 +43,19 @@ public:
 		return Vector3(GetRandomDouble(min, max), GetRandomDouble(min, max), GetRandomDouble(min, max));
 	}
 
+	inline static Vector3 GetRandomCosineDirection()
+	{
+		double r1 = GetRandomDouble();
+		double r2 = GetRandomDouble();
+		double z = std::sqrt(1.0 - r2);
+
+		double phi = 2.0 * M_PI * r1;
+		double x = std::cos(phi) * std::sqrt(r2);
+		double y = std::sin(phi) * std::sqrt(r2);
+
+		return Vector3(x, y, z);
+	}
+
 	double data[3];
 };
 

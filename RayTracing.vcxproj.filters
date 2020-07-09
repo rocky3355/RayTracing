@@ -90,6 +90,12 @@
     <ClCompile Include="isotropic_material.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="ortho_normal_basis.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="pdf.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vector3.h">
@@ -174,6 +180,12 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="isotropic_material.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="ortho_normal_basis.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="pdf.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

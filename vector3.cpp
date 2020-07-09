@@ -113,7 +113,7 @@ Vector3 Vector3::GetRandomInUnitSphere()
 
 Vector3 Vector3::GetRandomUnitVector()
 {
-	double a = GetRandomDouble(0, 2 * std::_Pi);
+	double a = GetRandomDouble(0, 2 * M_PI);
 	double z = GetRandomDouble(-1.0, 1.0);
 	double r = std::sqrt(1.0 - z * z);
 	return Vector3(r * std::cos(a), r * std::sin(a), z);

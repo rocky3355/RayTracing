@@ -7,7 +7,7 @@ DielectricMaterial::DielectricMaterial(double refraction_index)
 {
 }
 
-bool DielectricMaterial::Scatter(const Ray3& ray, const HitRecord& hit_record, Vector3& attenuation, Ray3& scattered) const
+bool DielectricMaterial::Scatter(const Ray3& ray, const HitRecord& hit_record, Vector3& attenuation, Ray3& scattered, double& pdf) const
 {
     attenuation = Vector3(1.0, 1.0, 1.0);
     double etai_over_etat;

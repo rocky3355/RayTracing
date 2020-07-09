@@ -128,7 +128,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_USE_MATH_DEFINES;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -155,6 +155,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="metal_material.cpp" />
     <ClCompile Include="noise_texture.cpp" />
+    <ClCompile Include="ortho_normal_basis.cpp" />
+    <ClCompile Include="pdf.cpp" />
     <ClCompile Include="perlin.cpp" />
     <ClCompile Include="ray3.cpp" />
     <ClCompile Include="rotation.cpp" />
@@ -181,6 +183,8 @@
     <ClInclude Include="material.h" />
     <ClInclude Include="metal_material.h" />
     <ClInclude Include="noise_texture.h" />
+    <ClInclude Include="ortho_normal_basis.h" />
+    <ClInclude Include="pdf.h" />
     <ClInclude Include="perlin.h" />
     <ClInclude Include="rotation.h" />
     <ClInclude Include="solid_color.h" />

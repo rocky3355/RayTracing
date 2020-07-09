@@ -12,8 +12,15 @@ bool DiffuseLight::Scatter(const Ray3& ray, const HitRecord& hit_record, Vector3
 	return false;
 }
 
-Vector3 DiffuseLight::Emit(double u, double v, const Vector3& p) const
+Vector3 DiffuseLight::Emit(const Ray3& ray, const HitRecord& hit_record) const
 {
-	return emit_->GetColor(u, v, p);
+    if (hit_record.front_face)
+    {
+        return emit_->GetColor(hit_record.u, hit_record.v, hit_record.point);
+    }
+    else
+    {
+        return VECTOR3_ZERO;
+    }
 }
 }  // namespace raytracing
