@@ -18,6 +18,9 @@
 #include "aa_rect.h"
 #include "flip_face.h"
 #include "box.h"
+#include "translation.h"
+#include "rotation.h"
+#include "constant_medium.h"
 
 using namespace raytracing;
 using namespace std::chrono_literals;
@@ -37,6 +40,11 @@ Vector3 RayColor(const Ray3& ray, const Vector3& background, const Hittable& wor
 	// TODO: Infinity instead of 10000
 	if (!world.Hit(ray, 0.001, 100000.0, hit_record))
 	{
+		/*
+		Vector3 unit_direction = ray.direction.UnitVector();
+		auto t = 0.5 * (unit_direction.y() + 1.0);
+		return (1.0 - t) * Vector3(1.0, 1.0, 1.0) + t * Vector3(0.5, 0.7, 1.0);
+		*/
 		return background;
 	}
 
@@ -48,25 +56,12 @@ Vector3 RayColor(const Ray3& ray, const Vector3& background, const Hittable& wor
 	{
 		return emitted;
 	}
-
+	
 	return emitted + attenuation * RayColor(scattered, background, world, depth - 1);
 }
 
-/*
-void WriteColor(std::ostream& out, const Vector3& pixel_color, int samples_per_pixel)
+HittableList CreateRandomScene()
 {
-	double red = std::sqrt(pixel_color.x() / samples_per_pixel);
-	double green = std::sqrt(pixel_color.y() / samples_per_pixel);
-	double blue = std::sqrt(pixel_color.z() / samples_per_pixel);
-	// Write the translated [0,255] value of each color component.
-	// TODO: Clamp is required? Why the .999?
-	out << static_cast<int>(256 * Clamp(red, 0.0, 0.999)) << ' '
-		<< static_cast<int>(256 * Clamp(green, 0.0, 0.999)) << ' '
-		<< static_cast<int>(256 * Clamp(blue, 0.0, 0.999)) << '\n';
-}
-*/
-
-HittableList CreateRandomScene() {
 	HittableList world;
 
 	std::shared_ptr<CheckerTexture> checker_texture = std::make_shared<CheckerTexture>(
@@ -167,16 +162,24 @@ HittableList CornellBox()
 	objects.Add(std::make_shared<XZRect>(0, 555, 0, 555, 555, white));
 	objects.Add(std::make_shared<FlipFace>(std::make_shared<XYRect>(0, 555, 0, 555, 555, white)));
 
-	objects.Add(std::make_shared<Box>(Vector3(130, 0, 65), Vector3(295, 165, 230), white));
-	objects.Add(std::make_shared<Box>(Vector3(265, 0, 295), Vector3(430, 330, 460), white));
+	std::shared_ptr<Hittable> box1 = std::make_shared<Box>(VECTOR3_ZERO, Vector3(165, 330, 165), white);
+	box1 = std::make_shared<RotationY>(box1, 15);
+	box1 = std::make_shared<Translation>(box1, Vector3(265, 0, 295));
+
+	std::shared_ptr<Hittable> box2 = std::make_shared<Box>(VECTOR3_ZERO, Vector3(165, 165, 165), white);
+	box2 = std::make_shared<RotationY>(box2, -18);
+	box2 = std::make_shared<Translation>(box2, Vector3(130, 0, 65));
+
+	objects.Add(std::make_shared<ConstantMedium>(box1, 0.01, std::make_shared<SolidColor>(0, 0, 0)));
+	objects.Add(std::make_shared<ConstantMedium>(box2, 0.01, std::make_shared<SolidColor>(1, 1, 1)));
 
 	return objects;
 }
 
 const int max_ray_depth = 50;
-const int samples_per_pixel = 50;
+const int samples_per_pixel = 20;
 constexpr double aspect_ratio = 16.0 / 9.0;
-constexpr int image_width = 800;
+constexpr int image_width = 400;
 constexpr int image_height = static_cast<int>(image_width / aspect_ratio);
 constexpr int number_of_pixels = image_width * image_height;
 const int number_of_threads = 8;
@@ -243,7 +246,7 @@ int main()
 	double vertical_fov = 40.0;
 	Camera camera(origin, look_at, up, vertical_fov, aspect_ratio, aperture, dist_to_focus, time_end);
 
-	HittableList world_list = SimpleLight();
+	HittableList world_list = CornellBox();
 	BhvNode world = BhvNode(world_list, time_end);
 
 	constexpr int number_of_bytes = number_of_pixels * 3;
@@ -296,25 +299,4 @@ int main()
 
 	// TODO: delete or delete[]?
 	delete[] image;
-
-	/*
-	for (int y = image_height - 1; y >= 0; --y)
-	{
-		std::cout << "Scanlines remaining: " << y << std::endl;
-		for (int x = 0; x < image_width; ++x)
-		{
-			Vector3 pixel_color;
-
-			for (int i = 0; i < samples_per_pixel; ++i)
-			{
-				double u = (x + GetRandomDouble()) / (image_width - 1);
-				double v = (y + GetRandomDouble()) / (image_height - 1);
-				Ray3 ray = camera.GetRay(u, v);
-				pixel_color += RayColor(ray, world, max_ray_depth);
-			}
-			
-			WriteColor(file, pixel_color, samples_per_pixel);
-		}
-	}
-	*/
 }

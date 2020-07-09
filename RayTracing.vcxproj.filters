@@ -78,6 +78,18 @@
     <ClCompile Include="box.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="rotation.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="translation.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="constant_medium.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="isotropic_material.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vector3.h">
@@ -150,6 +162,18 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="box.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="rotation.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="translation.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="constant_medium.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="isotropic_material.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
