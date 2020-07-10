@@ -1,11 +1,9 @@
 #pragma once
 
-#include <memory>
 #include "aabb.h"
 
 namespace raytracing
 {
-
 class Material;
 
 struct HitRecord
@@ -30,5 +28,15 @@ class Hittable
 public:
 	virtual bool Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_record) const = 0;
     virtual bool CreateBoundingBox(double t_end, AABB& bounding_box) const = 0;
+	
+	virtual double PdfValue(const Vector3& origin, const Vector3& v) const
+	{
+		return 0.0;
+	}
+
+	virtual Vector3 GetRandom(const Vector3& origin) const
+	{
+		return Vector3(1, 0, 0);
+	}
 };
 }  // namespace raytracing

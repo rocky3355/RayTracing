@@ -76,6 +76,26 @@ bool XZRect::CreateBoundingBox(double t_end, AABB& bounding_box) const
     return true;
 }
 
+double XZRect::PdfValue(const Vector3& origin, const Vector3& v) const
+{
+    HitRecord hit_record;
+    if (!this->Hit(Ray3(origin, v), 0.001, Infinity, hit_record))
+    {
+        return 0.0;
+    }
+
+    double area = (x1_ - x0_) * (z1_ - z0_);
+    double distance_squared = hit_record.t * hit_record.t * v.GetLengthSquared();
+    double cosine = std::fabs(v.Dot(hit_record.normal) / v.GetLength());
+
+    return distance_squared / (cosine * area);
+}
+
+Vector3 XZRect::GetRandom(const Vector3& origin) const
+{
+    return Vector3(1, 0, 0);
+}
+
 YZRect::YZRect(double y0, double y1, double z0, double z1, double k, std::shared_ptr<Material> material)
     : y0_(y0), y1_(y1), z0_(z0), z1_(z1), k_(k), material_(material)
 {

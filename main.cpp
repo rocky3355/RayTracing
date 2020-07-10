@@ -27,6 +27,9 @@
 // TODO: define "Color" as Vector3
 // TODO: Remove unnecessary empty constructors
 // TODO: Rename attenuation to albedo?
+// TODO: Check public/private
+// TODO: Class forward where possible
+// TODO: Check parameter passing, i.e. use (hit_record) instad of (hit_record.u, hit_record.v, ...)
 
 using namespace raytracing;
 using namespace std::chrono_literals;
@@ -46,43 +49,33 @@ Vector3 RayColor(const Ray3& ray, const Vector3& background, const Hittable& wor
 		return background;
 	}
 
-	double pdf;
+	double pdf_value;
 	Ray3 scattered;
 	Vector3 albedo;
 	Vector3 emitted = hit_record.material->Emit(ray, hit_record);
 
-	if (!hit_record.material->Scatter(ray, hit_record, albedo, scattered, pdf))
+	// TODO: Why is pdf_value passed here?
+	if (!hit_record.material->Scatter(ray, hit_record, albedo, scattered, pdf_value))
 	{
 		return emitted;
 	}
 
-	CosinePdf p(hit_record.normal);
-	scattered = Ray3(hit_record.point, p.Generate(), ray.time);
-	double pdf_val = p.Value(scattered.direction);
-
+	std::shared_ptr<Hittable> light_shape = std::make_shared<XZRect>(213, 343, 227, 332, 554, std::shared_ptr<Material>());
 	/*
-	Vector3 on_light = Vector3(GetRandomDouble(213, 343), 554, GetRandomDouble(227, 332));
-	Vector3 to_light = on_light - hit_record.point;
-	double distance_squared = to_light.GetLengthSquared();
-	to_light = to_light.UnitVector();
-
-	if (to_light.Dot(hit_record.normal) < 0)
-	{
-		return emitted;
-	}
-
-	double light_area = (343 - 213) * (332 - 227);
-	double light_cosine = std::fabs(to_light.y());
-	if (light_cosine < 0.000001)
-	{
-		return emitted;
-	}
-
-	pdf = distance_squared / (light_cosine * light_area);
-	scattered = Ray3(hit_record.point, to_light, ray.time);
+	auto p0 = std::make_shared<HittablePdf>(light_shape, hit_record.point);
+	auto p1 = std::make_shared<CosinePdf>(hit_record.normal);
+	MixturePdf p(p0, p1);
 	*/
-	return emitted + albedo * hit_record.material->ScatterPdf(ray, hit_record, scattered)
-							* RayColor(scattered, background, world, depth - 1) / pdf_val;
+
+	HittablePdf p(light_shape, hit_record.point);
+	scattered = Ray3(hit_record.point, p.Generate(), ray.time);
+	pdf_value = p.Value(scattered.direction);
+
+	return emitted
+			+ albedo
+		    * hit_record.material->ScatterPdf(ray, hit_record, scattered)
+			* RayColor(scattered, background, world, depth - 1)
+		    / pdf_value;
 }
 
 HittableList CreateRandomScene()
@@ -272,7 +265,7 @@ HittableList FinalSceneChapterTwo()
 }
 
 const int max_ray_depth = 50;
-const int samples_per_pixel = 2000;
+const int samples_per_pixel = 100;
 constexpr double aspect_ratio = 1.0 / 1.0;
 constexpr int image_width = 300;
 constexpr int image_height = static_cast<int>(image_width / aspect_ratio);

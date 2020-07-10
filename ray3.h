@@ -8,7 +8,7 @@ class Ray3
 {
 public:
 	Ray3();
-	Ray3(const Vector3& origin, const Vector3& direction, double time);
+	Ray3(const Vector3& origin, const Vector3& direction, double time = 0.0);
 
 	Vector3 At(double t) const;
 
