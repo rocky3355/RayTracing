@@ -7,11 +7,13 @@ MetalMaterial::MetalMaterial(const Vector3& albedo, double fuzz)
 {
 }
 
-bool MetalMaterial::Scatter(const Ray3& ray, const HitRecord& hit_record, Vector3& attenuation, Ray3& scattered, double& pdf) const
+bool MetalMaterial::Scatter(const Ray3& ray, const HitRecord& hit_record, ScatterRecord& scatter_record) const
 {
     Vector3 reflected = Vector3::Reflect(ray.direction.UnitVector(), hit_record.normal);
-    scattered = Ray3(hit_record.point, reflected + fuzz_ * Vector3::GetRandomInUnitSphere(), ray.time);
-    attenuation = albedo_;
-    return (scattered.direction.Dot(hit_record.normal) > 0);
+    scatter_record.specular_ray = Ray3(hit_record.point, reflected + fuzz_ * Vector3::GetRandomInUnitSphere());
+    scatter_record.attenuation = albedo_;
+    scatter_record.is_specular = true;
+    scatter_record.pdf = 0;
+    return true;
 }
 }  // namespace raytracing

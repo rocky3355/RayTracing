@@ -15,8 +15,8 @@ bool XYRect::Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_rec
         return false;
     }
 
-    auto x = ray.origin.x() + t * ray.direction.x();
-    auto y = ray.origin.y() + t * ray.direction.y();
+    double x = ray.origin.x() + t * ray.direction.x();
+    double y = ray.origin.y() + t * ray.direction.y();
     if (x < x0_ || x > x1_ || y < y0_ || y > y1_)
     {
         return false;
@@ -26,7 +26,7 @@ bool XYRect::Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_rec
     hit_record.v = (y - y0_) / (y1_ - y0_);
     hit_record.t = t;
 
-    auto outward_normal = Vector3(0.0, 0.0, 1.0);
+    Vector3 outward_normal = Vector3(0.0, 0.0, 1.0);
     hit_record.SetFaceNormal(ray, outward_normal);
     hit_record.material = material_;
     hit_record.point = ray.At(t);
@@ -52,8 +52,8 @@ bool XZRect::Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_rec
         return false;
     }
 
-    auto x = ray.origin.x() + t * ray.direction.x();
-    auto z = ray.origin.z() + t * ray.direction.z();
+    double x = ray.origin.x() + t * ray.direction.x();
+    double z = ray.origin.z() + t * ray.direction.z();
     if (x < x0_ || x > x1_ || z < z0_ || z > z1_)
     {
         return false;
@@ -63,7 +63,7 @@ bool XZRect::Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_rec
     hit_record.v = (z - z0_) / (z1_ - z0_);
     hit_record.t = t;
 
-    auto outward_normal = Vector3(0, 1, 0);
+    Vector3 outward_normal = Vector3(0, 1, 0);
     hit_record.SetFaceNormal(ray, outward_normal);
     hit_record.material = material_;
     hit_record.point = ray.At(t);
@@ -93,7 +93,8 @@ double XZRect::PdfValue(const Vector3& origin, const Vector3& v) const
 
 Vector3 XZRect::GetRandom(const Vector3& origin) const
 {
-    return Vector3(1, 0, 0);
+    Vector3 random_point = Vector3(GetRandomDouble(x0_, x1_), k_, GetRandomDouble(z0_, z1_));
+    return random_point - origin;
 }
 
 YZRect::YZRect(double y0, double y1, double z0, double z1, double k, std::shared_ptr<Material> material)
@@ -109,8 +110,8 @@ bool YZRect::Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_rec
         return false;
     }
 
-    auto y = ray.origin.y() + t * ray.direction.y();
-    auto z = ray.origin.z() + t * ray.direction.z();
+    double y = ray.origin.y() + t * ray.direction.y();
+    double z = ray.origin.z() + t * ray.direction.z();
     if (y < y0_ || y > y1_ || z < z0_ || z > z1_)
     {
         return false;
@@ -120,7 +121,7 @@ bool YZRect::Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_rec
     hit_record.v = (z - z0_) / (z1_ - z0_);
     hit_record.t = t;
 
-    auto outward_normal = Vector3(1, 0, 0);
+    Vector3 outward_normal = Vector3(1, 0, 0);
     hit_record.SetFaceNormal(ray, outward_normal);
     hit_record.material = material_;
     hit_record.point = ray.At(t);

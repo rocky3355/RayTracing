@@ -1,4 +1,5 @@
 #include "sphere.h"
+#include "ortho_normal_basis.h"
 
 namespace raytracing
 {
@@ -56,5 +57,27 @@ void Sphere::GetTextureCoordinates(const Vector3& p, double& u, double& v) const
     double theta = std::asin(p.y());
     u = 1 - (phi + M_PI) / (2 * M_PI);
     v = (theta + M_PI / 2) / M_PI;
+}
+
+double Sphere::PdfValue(const Vector3& origin, const Vector3& v) const
+{
+    HitRecord hit_record;
+    if (!this->Hit(Ray3(origin, v), 0.001, Infinity, hit_record))
+    {
+        return 0.0;
+    }
+
+    auto cos_theta_max = std::sqrt(1 - radius_ * radius_ / (origin_ - origin).GetLengthSquared());
+    auto solid_angle = 2 * M_PI * (1 - cos_theta_max);
+    return  1.0 / solid_angle;
+}
+
+Vector3 Sphere::GetRandom(const Vector3& origin) const
+{
+    Vector3 direction = origin_ - origin;
+    auto distance_squared = direction.GetLengthSquared();
+    OrthoNormalBasis uvw;
+    uvw.BuildFromW(direction);
+    return uvw.Local(Vector3::GetRandomToSphere(radius_, distance_squared));
 }
 }  // namespace raytracing

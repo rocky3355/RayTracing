@@ -60,4 +60,24 @@ bool HittableList::CreateBoundingBox(double t_end, AABB& bounding_box) const
 
     return true;
 }
+
+double HittableList::PdfValue(const Vector3& origin, const Vector3& v) const
+{
+    double sum = 0.0;
+    double weight = 1.0 / objects.size();
+    for (const auto& object : objects)
+    {
+        sum += weight * object->PdfValue(origin, v);
+    }
+    return sum;
+}
+
+Vector3 HittableList::GetRandom(const Vector3& origin) const
+{
+    if (objects.size() == 0)
+    {
+        return Hittable::GetRandom(origin);
+    }
+    return objects[GetRandomInt(objects.size() - 1)]->GetRandom(origin);
+}
 } // namespace raytracing

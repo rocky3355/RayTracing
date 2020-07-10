@@ -144,4 +144,17 @@ Vector3 Vector3::GetRandomInUnitDisk()
 		return point;
 	}
 }
+
+Vector3 Vector3::GetRandomToSphere(double radius, double distance_squared)
+{
+	double r1 = GetRandomDouble();
+	double r2 = GetRandomDouble();
+	double z = 1 + r2 * (std::sqrt(1 - radius * radius / distance_squared) - 1);
+
+	double phi = 2 * M_PI * r1;
+	double x = std::cos(phi) * std::sqrt(1 - z * z);
+	double y = std::sin(phi) * std::sqrt(1 - z * z);
+
+	return Vector3(x, y, z);
+}
 }  // namespace raytracing

@@ -32,6 +32,7 @@ public:
 	static Vector3 GetRandomUnitVector();
 	static Vector3 GetRandomInHemisphere(const Vector3& normal);
 	static Vector3 GetRandomInUnitDisk();
+	static Vector3 GetRandomToSphere(double radius, double distance_squared);
 
 	inline static Vector3 GetRandom()
 	{

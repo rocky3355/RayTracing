@@ -72,4 +72,17 @@ bool BhvNode::CreateBoundingBox(double t_end, AABB& output_box) const
     output_box = bounding_box_;
     return true;
 }
+
+/*
+double BhvNode::PdfValue(const Vector3& origin, const Vector3& v) const
+{
+    return 
+}
+
+Vector3 BhvNode::GetRandom(const Vector3& origin) const
+{
+    int int_size = static_cast<int>(objects.size());
+    return objects[GetRandomInt(int_size - 1)]->GetRandom(origin);
+}
+*/
 }

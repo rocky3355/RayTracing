@@ -8,18 +8,15 @@ LambertianMaterial::LambertianMaterial(std::shared_ptr<Texture> albedo)
 {
 }
 
-bool LambertianMaterial::Scatter(const Ray3& ray, const HitRecord& hit_record, Vector3& attenuation, Ray3& scattered, double& pdf) const
+bool LambertianMaterial::Scatter(const Ray3& ray, const HitRecord& hit_record, ScatterRecord& scatter_record) const
 {
-    OrthoNormalBasis uvw;
-    uvw.BuildFromW(hit_record.normal);
-    Vector3 direction = uvw.Local(Vector3::GetRandomCosineDirection());
-    scattered = Ray3(hit_record.point, direction.UnitVector(), ray.time);
-    attenuation = albedo_->GetColor(hit_record.u, hit_record.v, hit_record.point);
-    pdf = uvw.w().Dot(scattered.direction) / M_PI;
+    scatter_record.is_specular = false;
+    scatter_record.attenuation = albedo_->GetColor(hit_record.u, hit_record.v, hit_record.point);
+    scatter_record.pdf = std::make_shared<CosinePdf>(hit_record.normal);
     return true;
 }
 
-double LambertianMaterial::ScatterPdf(const Ray3& ray, const HitRecord& hit_record, Ray3& scattered) const
+double LambertianMaterial::ScatterPdf(const Ray3& ray, const HitRecord& hit_record, const Ray3& scattered) const
 {
     double cosine = hit_record.normal.Dot(scattered.direction.UnitVector());
     return cosine < 0.0 ? 0.0 : cosine / M_PI;

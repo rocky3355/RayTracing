@@ -12,6 +12,8 @@ public:
     BhvNode(std::vector<std::shared_ptr<Hittable>>& objects, size_t start, size_t end, double time_end);
     virtual bool Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_record) const;
     virtual bool CreateBoundingBox(double t_end, AABB& output_box) const;
+    //virtual double PdfValue(const Vector3& origin, const Vector3& v) const;
+    //virtual Vector3 GetRandom(const Vector3& origin) const;
 
 private:
     static bool BoxCompare(const std::shared_ptr<Hittable> a, const std::shared_ptr<Hittable> b, int axis)
