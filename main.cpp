@@ -23,6 +23,7 @@
 #include "constant_medium.h"
 #include "pdf.h"
 #include "filter.h"
+#include <CL/cl.hpp>
 
 // TODO: size_t where applicable
 // TODO: base class for filters
@@ -366,6 +367,32 @@ void PrintProgress()
 
 int main()
 {
+	//get all platforms (drivers)
+	std::vector<cl::Platform> all_platforms;
+	cl::Platform::get(&all_platforms);
+	if (all_platforms.size() == 0)
+	{
+		std::cout << " No platforms found. Check OpenCL installation!\n";
+		exit(1);
+	}
+	
+	for (const cl::Platform& platform : all_platforms)
+	{
+		std::cout << "Platform: " << platform.getInfo<CL_PLATFORM_NAME>() << "\n";
+
+		std::vector<cl::Device> all_devices;
+		platform.getDevices(CL_DEVICE_TYPE_ALL, &all_devices);
+		if (all_devices.size() == 0)
+		{
+			std::cout << "   No devices found. Check OpenCL installation!\n";
+			exit(1);
+		}
+		for (const cl::Device& device : all_devices)
+		{
+			std::cout << "    - Device: " << device.getInfo<CL_DEVICE_NAME>() << "\n";
+		}
+	}
+
 	Camera camera;
 	double time_end = 1.0;
 	std::shared_ptr<HittableList> lights = std::make_shared<HittableList>();
