@@ -153,6 +153,7 @@
     <ClCompile Include="isotropic_material.cpp" />
     <ClCompile Include="lambertian_material.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="filter.cpp" />
     <ClCompile Include="metal_material.cpp" />
     <ClCompile Include="noise_texture.cpp" />
     <ClCompile Include="ortho_normal_basis.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="isotropic_material.h" />
     <ClInclude Include="lambertian_material.h" />
     <ClInclude Include="material.h" />
+    <ClInclude Include="filter.h" />
     <ClInclude Include="metal_material.h" />
     <ClInclude Include="noise_texture.h" />
     <ClInclude Include="ortho_normal_basis.h" />

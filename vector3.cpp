@@ -22,16 +22,6 @@ Vector3 Vector3::operator-() const
 	return Vector3(-data[0], -data[1], -data[2]);
 }
 
-double Vector3::operator[](int idx) const
-{
-	return data[idx];
-}
-
-double& Vector3::operator[](int idx)
-{
-	return data[idx];
-}
-
 Vector3& Vector3::operator+=(const Vector3& v)
 {
 	data[0] += v.data[0];

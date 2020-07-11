@@ -22,8 +22,10 @@
 #include "rotation.h"
 #include "constant_medium.h"
 #include "pdf.h"
+#include "filter.h"
 
-// TODO: Blur image at end
+// TODO: size_t where applicable
+// TODO: base class for filters
 // TODO: define "Color" as Vector3?
 // TODO: Rename attenuation to albedo?
 // TODO: Class forward where possible
@@ -190,8 +192,7 @@ HittableList FinalSceneChapterTwo(Camera& camera, double aspect, std::shared_ptr
 	objects.Add(std::make_shared<BvhNode>(boxes1, 1.0));
 
 	auto light = std::make_shared<DiffuseLight>(std::make_shared<SolidColor>(7, 7, 7));
-	objects.Add(std::make_shared<XZRect>(123, 423, 147, 412, 554, light));
-
+	objects.Add(std::make_shared<FlipFace>(std::make_shared<XZRect>(123, 423, 147, 412, 554, light)));
 	lights->Add(std::make_shared<XZRect>(123, 423, 147, 412, 554, std::shared_ptr<Material>()));
 
 	auto center1 = Vector3(400, 400, 200);
@@ -246,14 +247,19 @@ HittableList FinalSceneChapterTwo(Camera& camera, double aspect, std::shared_ptr
 }
 
 // #######################################
+// TODO: const or constexpr?
 const int max_ray_depth = 50;
-const int samples_per_pixel = 100;
+const int samples_per_pixel = 2000;
 constexpr double aspect_ratio = 1.0 / 1.0;
-constexpr int image_width = 300;
-constexpr int image_height = static_cast<int>(image_width / aspect_ratio);
-constexpr int number_of_pixels = image_width * image_height;
+constexpr int image_width = 600;
 const int number_of_threads = 8;
-const int pixels_per_thread = static_cast<int>(std::ceil((double)number_of_pixels / number_of_threads));
+
+constexpr int image_height = static_cast<int>(image_width / aspect_ratio);
+constexpr int image_width_extended = image_width + 2;
+constexpr int image_height_extended = image_height + 2;
+constexpr int number_of_pixels = image_width * image_height;
+constexpr int number_of_pixels_extended = image_width_extended * image_height_extended;
+const int pixels_per_thread = static_cast<int>(std::ceil((double)number_of_pixels_extended / number_of_threads));
 int number_of_rendered_pixels = 0;
 bool rendering_finished = false;
 // #######################################
@@ -303,15 +309,15 @@ void RaytraceImagePart(int start_idx, int end_idx, const Camera& camera, const H
 {
 	for (size_t i = start_idx; i <= end_idx; ++i)
 	{
-		int y = image_height - i / image_width - 1;
-		int x = i % image_width;
+		int y = image_height_extended - i / image_width_extended - 1;
+		int x = i % image_width_extended;
 
 		Vector3 pixel_color;
 
 		for (int s = 0; s < samples_per_pixel; ++s)
 		{
-			double u = (x + GetRandomDouble()) / (image_width - 1);
-			double v = (y + GetRandomDouble()) / (image_height - 1);
+			double u = (x + GetRandomDouble()) / (image_width_extended - 1);
+			double v = (y + GetRandomDouble()) / (image_width_extended - 1);
 			Ray3 ray = camera.GetRay(u, v);
 			pixel_color += RayColor(ray, VECTOR3_ZERO, world, lights, max_ray_depth);
 		}
@@ -344,7 +350,7 @@ void PrintProgress()
 	int last_percentage = 0;
 	while (!rendering_finished)
 	{
-		int percentage = static_cast<int>(std::round((double)number_of_rendered_pixels / number_of_pixels * 100.0));
+		int percentage = static_cast<int>(std::round((double)number_of_rendered_pixels / number_of_pixels_extended * 100.0));
 		if (percentage > last_percentage)
 		{
 			std::cout << percentage << "%, ";
@@ -368,7 +374,8 @@ int main()
 	BvhNode world = BvhNode(world_list, time_end);
 
 	constexpr int number_of_bytes = number_of_pixels * 3;
-	uint8_t* image = new uint8_t[number_of_bytes];
+	constexpr int number_of_bytes_extended = number_of_pixels_extended * 3;
+	uint8_t* image = new uint8_t[number_of_bytes_extended];
 	if (image == nullptr)
 	{
 		std::cout << "Error allocating memory" << std::endl;
@@ -384,7 +391,7 @@ int main()
 	for (size_t i = 0; i < number_of_threads; ++i)
 	{
 		int end_idx = start_idx + pixels_per_thread;
-		end_idx = end_idx >= number_of_pixels ? (number_of_pixels - 1) : end_idx;
+		end_idx = end_idx >= number_of_pixels_extended ? (number_of_pixels_extended - 1) : end_idx;
 		threads[i] = std::thread(RaytraceImagePart, start_idx, end_idx, camera, world, lights, image);
 		start_idx = end_idx + 1;
 	}
@@ -394,10 +401,12 @@ int main()
 		threads[i].join();
 	}
 
+	MedianFilter filter;
+	uint8_t* image_filtered = new uint8_t[number_of_bytes];
+	filter.Filter(image, image_width_extended, image_height_extended, image_filtered);
+
 	std::chrono::duration<double> elapsed = std::chrono::high_resolution_clock::now() - start;
 	std::cout << "\n\nElapsed: " << elapsed.count() << "s\n";
-
-	// 197s, 35s with BvhNode
 
 	rendering_finished = true;
 	// TODO: Check for joinable?
@@ -410,10 +419,11 @@ int main()
 
 	for (int i = 0; i < number_of_bytes; i += 3)
 	{
-		file << std::to_string(image[i]) << ' ' << std::to_string(image[i + 1]) << ' ' << std::to_string(image[i + 2]) << '\n';
+		file << std::to_string(image_filtered[i]) << ' ' << std::to_string(image_filtered[i + 1]) << ' ' << std::to_string(image_filtered[i + 2]) << '\n';
 	}
 	//file.write(reinterpret_cast<char*>(image), number_of_bytes);
 
 	// TODO: delete or delete[]?
 	delete[] image;
+	delete[] image_filtered;
 }

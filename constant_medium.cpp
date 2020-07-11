@@ -59,15 +59,6 @@ bool ConstantMedium::Hit(const Ray3& ray, double t_min, double t_max, HitRecord&
 
     hit_record.t = rec1.t + hit_distance / ray_length;
     hit_record.point = ray.At(hit_record.t);
-
-    /*
-    if (debugging) {
-        std::cerr << "hit_distance = " << hit_distance << '\n'
-            << "rec.t = " << rec.t << '\n'
-            << "rec.p = " << rec.p << '\n';
-    }
-    */
-
     hit_record.normal = Vector3(1.0, 0.0, 0.0);  // arbitrary
     hit_record.front_face = true;                // also arbitrary
     hit_record.material = phase_function_;

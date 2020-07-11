@@ -11,8 +11,8 @@ public:
 	Vector3();
 	Vector3(double x, double y, double z);
 	Vector3 operator-() const;
-	double operator[](int idx) const;
-	double& operator[](int idx);
+	inline double operator[](int idx) const { return data[idx]; }
+	inline double& operator[](int idx) { return data[idx]; }
 	Vector3& operator+=(const Vector3& v);
 	Vector3& operator*=(const double t);
 	Vector3& operator/=(const double t);

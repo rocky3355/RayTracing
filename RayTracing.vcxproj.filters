@@ -96,6 +96,9 @@
     <ClCompile Include="bvh_node.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="filter.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vector3.h">
@@ -186,6 +189,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="bvh_node.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="filter.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
