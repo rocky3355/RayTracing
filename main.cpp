@@ -203,7 +203,7 @@ HittableList FinalSceneChapterTwo(Camera& camera, double aspect, std::shared_ptr
 
 	objects.Add(std::make_shared<Sphere>(Vector3(260, 150, 45), 50, std::make_shared<DielectricMaterial>(1.5)));
 	objects.Add(std::make_shared<Sphere>(
-		Vector3(0, 150, 145), 50, std::make_shared<MetalMaterial>(Vector3(0.8, 0.8, 0.9), 10.0)
+		Vector3(0, 150, 145), 50, std::make_shared<MetalMaterial>(Vector3(0.8, 0.8, 0.9), 0.0)
 		));
 
 	auto boundary = std::make_shared<Sphere>(Vector3(360, 150, 145), 70, std::make_shared<DielectricMaterial>(1.5));
