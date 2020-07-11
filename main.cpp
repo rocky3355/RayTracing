@@ -3,7 +3,7 @@
 #include <thread>
 #include <chrono>
 #include <string>
-#include "bhv_node.h"
+#include "bvh_node.h"
 #include "sphere.h"
 #include "camera.h"
 #include "diffuse_light.h"
@@ -23,11 +23,9 @@
 #include "constant_medium.h"
 #include "pdf.h"
 
-// TODO: Rename BHV to BVH
-// TODO: define "Color" as Vector3
-// TODO: Remove unnecessary empty constructors
+// TODO: Blur image at end
+// TODO: define "Color" as Vector3?
 // TODO: Rename attenuation to albedo?
-// TODO: Check public/private
 // TODO: Class forward where possible
 // TODO: Check parameter passing, i.e. use (hit_record) instad of (hit_record.u, hit_record.v, ...)
 
@@ -120,7 +118,7 @@ HittableList SimpleLight()
 	return objects;
 }
 
-HittableList CornellBox(Camera& camera, double aspect)
+HittableList CornellBox(Camera& camera, double aspect, std::shared_ptr<HittableList> lights)
 {
 	HittableList world;
 
@@ -136,30 +134,37 @@ HittableList CornellBox(Camera& camera, double aspect)
 	world.Add(std::make_shared<XZRect>(0, 555, 0, 555, 0, white));
 	world.Add(std::make_shared<FlipFace>(std::make_shared<XYRect>(0, 555, 0, 555, 555, white)));
 
-	std::shared_ptr<Material> aluminum = std::make_shared<MetalMaterial>(Vector3(0.8, 0.85, 0.88), 0.0);
-	std::shared_ptr<Hittable> box1 = std::make_shared<Box>(Vector3(0, 0, 0), Vector3(165, 330, 165), aluminum);
+	std::shared_ptr<Hittable> box1 = std::make_shared<Box>(Vector3(0, 0, 0), Vector3(165, 330, 165), white);
 	box1 = std::make_shared<RotationY>(box1, 15);
 	box1 = std::make_shared<Translation>(box1, Vector3(265, 0, 295));
 	world.Add(box1);
 
+	/*
 	std::shared_ptr<Hittable> box2 = std::make_shared<Box>(Vector3(0, 0, 0), Vector3(165, 165, 165), white);
 	box2 = std::make_shared<RotationY>(box2, -18);
 	box2 = std::make_shared<Translation>(box2, Vector3(130, 0, 65));
 	world.Add(box2);
+	*/
 
-	Vector3 lookfrom(278, 278, -800);
-	Vector3 lookat(278, 278, 0);
-	Vector3 vup(0, 1, 0);
+	auto glass = std::make_shared<DielectricMaterial>(1.5);
+	world.Add(std::make_shared<Sphere>(Vector3(190, 90, 190), 90, glass));
+
+	lights->Add(std::make_shared<XZRect>(213, 343, 227, 332, 554, std::shared_ptr<Material>()));
+	lights->Add(std::make_shared<Sphere>(Vector3(190, 90, 190), 90, std::shared_ptr<Material>()));
+
+	Vector3 origin(278, 278, -800);
+	Vector3 look_at(278, 278, 0);
+	Vector3 up(0, 1, 0);
 	auto dist_to_focus = 10.0;
 	auto aperture = 0.0;
 	auto vfov = 40.0;
 	auto t_end = 1.0;
 
-	camera = Camera(lookfrom, lookat, vup, vfov, aspect, aperture, dist_to_focus, t_end);
+	camera = Camera(origin, look_at, up, vfov, aspect, aperture, dist_to_focus, t_end);
 	return world;
 }
 
-HittableList FinalSceneChapterTwo()
+HittableList FinalSceneChapterTwo(Camera& camera, double aspect, std::shared_ptr<HittableList> lights)
 {
 	HittableList boxes1;
 	auto ground = std::make_shared<LambertianMaterial>(std::make_shared<SolidColor>(0.48, 0.83, 0.53));
@@ -182,10 +187,12 @@ HittableList FinalSceneChapterTwo()
 	}
 
 	HittableList objects;
-	objects.Add(std::make_shared<BhvNode>(boxes1, 1.0));
+	objects.Add(std::make_shared<BvhNode>(boxes1, 1.0));
 
-	//auto light = std::make_shared<DiffuseLight>(std::make_shared<SolidColor>(7, 7, 7));
-	//objects.Add(std::make_shared<XZRect>(123, 423, 147, 412, 554, light));
+	auto light = std::make_shared<DiffuseLight>(std::make_shared<SolidColor>(7, 7, 7));
+	objects.Add(std::make_shared<XZRect>(123, 423, 147, 412, 554, light));
+
+	lights->Add(std::make_shared<XZRect>(123, 423, 147, 412, 554, std::shared_ptr<Material>()));
 
 	auto center1 = Vector3(400, 400, 200);
 	//auto center2 = center1 + Vector3(30, 0, 0);
@@ -221,14 +228,24 @@ HittableList FinalSceneChapterTwo()
 
 	objects.Add(std::make_shared<Translation>(
 		std::make_shared<RotationY>(
-			std::make_shared<BhvNode>(boxes2, 1.0), 15),
+			std::make_shared<BvhNode>(boxes2, 1.0), 15),
 		Vector3(-100, 270, 395)
 		)
 	);
 
+	Vector3 origin(478, 278, -600);
+	Vector3 look_at(278, 278, 0);
+	Vector3 up(0, 1, 0);
+	auto dist_to_focus = 10.0;
+	auto aperture = 0.0;
+	auto vfov = 40.0;
+	auto t_end = 1.0;
+
+	camera = Camera(origin, look_at, up, vfov, aspect, aperture, dist_to_focus, t_end);
 	return objects;
 }
 
+// #######################################
 const int max_ray_depth = 50;
 const int samples_per_pixel = 100;
 constexpr double aspect_ratio = 1.0 / 1.0;
@@ -239,13 +256,14 @@ const int number_of_threads = 8;
 const int pixels_per_thread = static_cast<int>(std::ceil((double)number_of_pixels / number_of_threads));
 int number_of_rendered_pixels = 0;
 bool rendering_finished = false;
+// #######################################
+
 
 Vector3 RayColor(const Ray3& ray, const Vector3& background, const Hittable& world, std::shared_ptr<Hittable> lights, int depth)
 {
 	HitRecord hit_record;
 
-	// TODO: Why <=?
-	if (depth <= 0)
+	if (depth == 0)
 	{
 		return VECTOR3_ZERO;
 	}
@@ -253,6 +271,7 @@ Vector3 RayColor(const Ray3& ray, const Vector3& background, const Hittable& wor
 	// If the ray hits nothing, return the background color.
 	if (!world.Hit(ray, 0.001, Infinity, hit_record))
 	{
+		//return Vector3(0.0, 1.0, 0.0);
 		return background;
 	}
 
@@ -269,10 +288,10 @@ Vector3 RayColor(const Ray3& ray, const Vector3& background, const Hittable& wor
 	}
 
 	std::shared_ptr<Pdf> light_pdf = std::make_shared<HittablePdf>(lights, hit_record.point);
-	MixturePdf p(light_pdf, scatter_record.pdf);
+	MixturePdf pdf(light_pdf, scatter_record.pdf);
 
-	Ray3 scattered = Ray3(hit_record.point, p.Generate(), ray.time);
-	auto pdf_val = p.Value(scattered.direction);
+	Ray3 scattered = Ray3(hit_record.point, pdf.Generate(), ray.time);
+	double pdf_val = pdf.Value(scattered.direction);
 
 	return emitted
 		+ scatter_record.attenuation * hit_record.material->ScatterPdf(ray, hit_record, scattered)
@@ -297,9 +316,18 @@ void RaytraceImagePart(int start_idx, int end_idx, const Camera& camera, const H
 			pixel_color += RayColor(ray, VECTOR3_ZERO, world, lights, max_ray_depth);
 		}
 
-		double red = std::sqrt(pixel_color.x() / samples_per_pixel);
-		double green = std::sqrt(pixel_color.y() / samples_per_pixel);
-		double blue = std::sqrt(pixel_color.z() / samples_per_pixel);
+		double red = pixel_color.x();
+		double green = pixel_color.y();
+		double blue = pixel_color.z();
+
+		// Replace NaN components with zero. See explanation in Ray Tracing: The Rest of Your Life.
+		red = std::isnan(red) ? 0.0 : red;
+		green = std::isnan(green) ? 0.0 : green;
+		blue = std::isnan(blue) ? 0.0 : blue;
+
+		red = std::sqrt(red / samples_per_pixel);
+		green = std::sqrt(green / samples_per_pixel);
+		blue = std::sqrt(blue / samples_per_pixel);
 
 		// TODO: Why 0.999? Is Clamp really required?
 		int byte_idx = i * 3;
@@ -328,24 +356,16 @@ void PrintProgress()
 	std::cout << std::endl;
 }
 
+// Cornell, 600x600 5000 rays: 2000s
+
 int main()
 {
+	Camera camera;
 	double time_end = 1.0;
-	Vector3 origin(478, 278, -600);
-	Vector3 look_at(278, 278, 0);
-	Vector3 up(0, 1, 0);
-	double dist_to_focus = 10.0;
-	double aperture = 0.0;
-	double vertical_fov = 40.0;
-	Camera camera(origin, look_at, up, vertical_fov, aspect_ratio, aperture, dist_to_focus, time_end);
+	std::shared_ptr<HittableList> lights = std::make_shared<HittableList>();
 
-	HittableList world_list = CornellBox(camera, 1.0);
-	// TODO: Implement Pdfvalue und GetRandom() for BhvNode
-	BhvNode world = BhvNode(world_list, time_end);
-
-	auto lights = std::make_shared<HittableList>();
-	lights->Add(std::make_shared<XZRect>(123, 423, 147, 412, 554, std::make_shared<Material>()));
-	std::shared_ptr<Hittable> glass_sphere = std::make_shared<Sphere>(Vector3(190, 90, 190), 90, 0);
+	HittableList world_list = FinalSceneChapterTwo(camera, time_end, lights);
+	BvhNode world = BvhNode(world_list, time_end);
 
 	constexpr int number_of_bytes = number_of_pixels * 3;
 	uint8_t* image = new uint8_t[number_of_bytes];
@@ -365,7 +385,7 @@ int main()
 	{
 		int end_idx = start_idx + pixels_per_thread;
 		end_idx = end_idx >= number_of_pixels ? (number_of_pixels - 1) : end_idx;
-		threads[i] = std::thread(RaytraceImagePart, start_idx, end_idx, camera, world, glass_sphere, image);
+		threads[i] = std::thread(RaytraceImagePart, start_idx, end_idx, camera, world, lights, image);
 		start_idx = end_idx + 1;
 	}
 
@@ -377,7 +397,7 @@ int main()
 	std::chrono::duration<double> elapsed = std::chrono::high_resolution_clock::now() - start;
 	std::cout << "\n\nElapsed: " << elapsed.count() << "s\n";
 
-	// 197s, 35s with BhvNode
+	// 197s, 35s with BvhNode
 
 	rendering_finished = true;
 	// TODO: Check for joinable?

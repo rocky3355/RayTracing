@@ -78,6 +78,6 @@ Vector3 HittableList::GetRandom(const Vector3& origin) const
     {
         return Hittable::GetRandom(origin);
     }
-    return objects[GetRandomInt(objects.size() - 1)]->GetRandom(origin);
+    return objects[GetRandomInt(0, objects.size() - 1)]->GetRandom(origin);
 }
 } // namespace raytracing

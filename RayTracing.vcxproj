@@ -140,7 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="aabb.cpp" />
-    <ClCompile Include="bhv_node.cpp" />
+    <ClCompile Include="bvh_node.cpp" />
     <ClCompile Include="box.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="checker_texture.cpp" />
@@ -169,7 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="aabb.h" />
-    <ClInclude Include="bhv_node.h" />
+    <ClInclude Include="bvh_node.h" />
     <ClInclude Include="box.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="checker_texture.h" />

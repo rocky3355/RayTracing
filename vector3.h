@@ -33,28 +33,16 @@ public:
 	static Vector3 GetRandomInHemisphere(const Vector3& normal);
 	static Vector3 GetRandomInUnitDisk();
 	static Vector3 GetRandomToSphere(double radius, double distance_squared);
+	static Vector3 GetRandomCosineDirection();
 
 	inline static Vector3 GetRandom()
 	{
 		return Vector3(GetRandomDouble(), GetRandomDouble(), GetRandomDouble());
 	}
 
-	inline static Vector3 GetRandom(double min, double max) 
+	inline static Vector3 GetRandom(double min, double max)
 	{
 		return Vector3(GetRandomDouble(min, max), GetRandomDouble(min, max), GetRandomDouble(min, max));
-	}
-
-	inline static Vector3 GetRandomCosineDirection()
-	{
-		double r1 = GetRandomDouble();
-		double r2 = GetRandomDouble();
-		double z = std::sqrt(1.0 - r2);
-
-		double phi = 2.0 * M_PI * r1;
-		double x = std::cos(phi) * std::sqrt(r2);
-		double y = std::sin(phi) * std::sqrt(r2);
-
-		return Vector3(x, y, z);
 	}
 
 	double data[3];

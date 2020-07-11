@@ -7,23 +7,21 @@ DielectricMaterial::DielectricMaterial(double refraction_index)
 {
 }
 
-bool DielectricMaterial::Scatter(const Ray3& ray, const HitRecord& hit_record, Vector3& attenuation, Ray3& scattered, double& pdf) const
+bool DielectricMaterial::Scatter(const Ray3& ray, const HitRecord& hit_record, ScatterRecord& scatter_record) const
 {
-    attenuation = Vector3(1.0, 1.0, 1.0);
-    double etai_over_etat;
-    if (hit_record.front_face) {
-        etai_over_etat = 1.0 / refraction_index_;
-    }
-    else {
-        etai_over_etat = refraction_index_;
-    }
+    scatter_record.is_specular = true;
+    scatter_record.pdf = nullptr;
+    scatter_record.attenuation = VECTOR3_UNIT_XYZ;
+
+    double etai_over_etat = (hit_record.front_face) ? (1.0 / refraction_index_) : refraction_index_;
 
     Vector3 unit_direction = ray.direction.UnitVector();
     double cos_theta = std::fmin(-unit_direction.Dot(hit_record.normal), 1.0);
     double sin_theta = std::sqrt(1.0 - cos_theta * cos_theta);
-    if (etai_over_etat * sin_theta > 1.0) {
+    if (etai_over_etat * sin_theta > 1.0)
+    {
         Vector3 reflected = Vector3::Reflect(unit_direction, hit_record.normal);
-        scattered = Ray3(hit_record.point, reflected, ray.time);
+        scatter_record.specular_ray = Ray3(hit_record.point, reflected, ray.time);
         return true;
     }
 
@@ -31,12 +29,12 @@ bool DielectricMaterial::Scatter(const Ray3& ray, const HitRecord& hit_record, V
     if (GetRandomDouble() < reflect_probability)
     {
         Vector3 reflected = Vector3::Reflect(unit_direction, hit_record.normal);
-        scattered = Ray3(hit_record.point, reflected, ray.time);
+        scatter_record.specular_ray = Ray3(hit_record.point, reflected, ray.time);
         return true;
     }
 
     Vector3 refracted = Vector3::Refract(unit_direction, hit_record.normal, etai_over_etat);
-    scattered = Ray3(hit_record.point, refracted, ray.time);
+    scatter_record.specular_ray = Ray3(hit_record.point, refracted, ray.time);
     return true;
 }
 

@@ -3,10 +3,8 @@
 
 namespace raytracing
 {
-Sphere::Sphere() { }
-
 Sphere::Sphere(Vector3 origin, double radius, std::shared_ptr<Material> material, const Vector3& velocity)
-	: origin_(origin), radius_(radius), material(material), velocity_(velocity)
+	: origin_(origin), radius_(radius), material_(material), velocity_(velocity)
 {
 }
 
@@ -19,19 +17,33 @@ bool Sphere::Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_rec
 	double c = oc.GetLengthSquared() - radius_ * radius_;
 	double discriminant = half_b * half_b - a * c;
 
-    if (discriminant > 0)
+    if (discriminant > 0.0)
     {
         double root = std::sqrt(discriminant);
         double temp = (-half_b - root) / a;
         double temp2 = (-half_b + root) / a;
-        if ((temp < t_max && temp > t_min) || (temp2 < t_max && temp > t_min))
+        double selected_temp = 0.0;
+        bool temp_condition_fulfilled = false;
+
+        if (temp < t_max && temp > t_min)
         {
-            hit_record.t = temp;
+            selected_temp = temp;
+            temp_condition_fulfilled = true;
+        }
+        else if (temp2 < t_max && temp2 > t_min)
+        {
+            selected_temp = temp2;
+            temp_condition_fulfilled = true;
+        }
+
+        if (temp_condition_fulfilled)
+        {
+            hit_record.t = selected_temp;
             hit_record.point = ray.At(hit_record.t);
             Vector3 outward_normal = (hit_record.point - timed_origin) / radius_;
             hit_record.SetFaceNormal(ray, outward_normal);
-            hit_record.material = material;
-            GetTextureCoordinates((hit_record.point - origin_) / radius_, hit_record.u, hit_record.v);
+            hit_record.material = material_;
+            GetTextureCoordinates((hit_record.point - timed_origin) / radius_, hit_record.u, hit_record.v);
             return true;
         }
     }
@@ -67,15 +79,15 @@ double Sphere::PdfValue(const Vector3& origin, const Vector3& v) const
         return 0.0;
     }
 
-    auto cos_theta_max = std::sqrt(1 - radius_ * radius_ / (origin_ - origin).GetLengthSquared());
-    auto solid_angle = 2 * M_PI * (1 - cos_theta_max);
+    double cos_theta_max = std::sqrt(1 - radius_ * radius_ / (origin_ - origin).GetLengthSquared());
+    double solid_angle = 2 * M_PI * (1 - cos_theta_max);
     return  1.0 / solid_angle;
 }
 
 Vector3 Sphere::GetRandom(const Vector3& origin) const
 {
     Vector3 direction = origin_ - origin;
-    auto distance_squared = direction.GetLengthSquared();
+    double distance_squared = direction.GetLengthSquared();
     OrthoNormalBasis uvw;
     uvw.BuildFromW(direction);
     return uvw.Local(Vector3::GetRandomToSphere(radius_, distance_squared));

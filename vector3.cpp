@@ -92,7 +92,7 @@ Vector3 Vector3::Reflect(const Vector3& v, const Vector3& n)
 
 Vector3 Vector3::Refract(const Vector3& uv, const Vector3& n, double etai_over_etat)
 {
-	auto cos_theta = -uv.Dot(n);
+	double cos_theta = std::fmin(-uv.Dot(n), 1.0);
 	Vector3 r_out_parallel = etai_over_etat * (uv + cos_theta * n);
 	Vector3 r_out_perp = -std::sqrt(1.0 - r_out_parallel.GetLengthSquared()) * n;
 	return r_out_parallel + r_out_perp;
@@ -126,10 +126,7 @@ Vector3 Vector3::GetRandomInHemisphere(const Vector3& normal)
 	{
 		return in_unit_sphere;
 	}
-	else
-	{
-		return -in_unit_sphere;
-	}
+	return -in_unit_sphere;
 }
 
 Vector3 Vector3::GetRandomInUnitDisk()
@@ -154,6 +151,19 @@ Vector3 Vector3::GetRandomToSphere(double radius, double distance_squared)
 	double phi = 2 * M_PI * r1;
 	double x = std::cos(phi) * std::sqrt(1 - z * z);
 	double y = std::sin(phi) * std::sqrt(1 - z * z);
+
+	return Vector3(x, y, z);
+}
+
+Vector3 Vector3::GetRandomCosineDirection()
+{
+	double r1 = GetRandomDouble();
+	double r2 = GetRandomDouble();
+	double z = std::sqrt(1.0 - r2);
+
+	double phi = 2.0 * M_PI * r1;
+	double x = std::cos(phi) * std::sqrt(r2);
+	double y = std::sin(phi) * std::sqrt(r2);
 
 	return Vector3(x, y, z);
 }

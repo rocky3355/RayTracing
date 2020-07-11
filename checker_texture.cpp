@@ -2,10 +2,6 @@
 
 namespace raytracing
 {
-CheckerTexture::CheckerTexture()
-{
-}
-
 CheckerTexture::CheckerTexture(std::shared_ptr<Texture> tex0, std::shared_ptr<Texture> tex1)
     : even_(tex0), odd_(tex1)
 {

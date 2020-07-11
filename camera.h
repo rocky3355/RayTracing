@@ -7,6 +7,7 @@ namespace raytracing
 class Camera
 {
 public:
+    Camera();
     Camera(Vector3 origin, Vector3 look_at, Vector3 up, double vertical_fov, double aspect_ratio, double aperture, double focus_distance, double time_end);
     Ray3 GetRay(double u, double v) const;
 

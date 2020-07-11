@@ -1,22 +1,18 @@
-#include "bhv_node.h"
+#include "bvh_node.h"
 #include <algorithm>
 #include <functional>
 
 namespace raytracing
 {
-BhvNode::BhvNode()
+BvhNode::BvhNode(HittableList& list, double time_end)
+    : BvhNode(list.objects, 0, list.objects.size(), time_end)
 {
 }
 
-BhvNode::BhvNode(HittableList& list, double time_end)
-    : BhvNode(list.objects, 0, list.objects.size(), time_end)
+BvhNode::BvhNode(std::vector<std::shared_ptr<Hittable>>& objects, size_t start, size_t end, double time_end)
 {
-}
-
-BhvNode::BhvNode(std::vector<std::shared_ptr<Hittable>>& objects, size_t start, size_t end, double time_end)
-{
-    int axis = GetRandomInt(2);
-    auto comparator = (axis == 0) ? &BhvNode::BoxXCompare : (axis == 1) ? &BhvNode::BoxYCompare : &BhvNode::BoxZCompare;
+    int axis = GetRandomInt(0, 2);
+    auto comparator = (axis == 0) ? &BvhNode::BoxXCompare : (axis == 1) ? &BvhNode::BoxYCompare : &BvhNode::BoxZCompare;
 
     size_t object_span = end - start;
 
@@ -40,8 +36,8 @@ BhvNode::BhvNode(std::vector<std::shared_ptr<Hittable>>& objects, size_t start, 
     else {
         std::sort(objects.begin() + start, objects.begin() + end, comparator);
         auto mid = start + object_span / 2;
-        left_ = std::make_shared<BhvNode>(objects, start, mid, time_end);
-        right_ = std::make_shared<BhvNode>(objects, mid, end, time_end);
+        left_ = std::make_shared<BvhNode>(objects, start, mid, time_end);
+        right_ = std::make_shared<BvhNode>(objects, mid, end, time_end);
     }
 
     AABB box_left, box_right;
@@ -54,7 +50,7 @@ BhvNode::BhvNode(std::vector<std::shared_ptr<Hittable>>& objects, size_t start, 
     bounding_box_ = AABB::GetSurroundingBox(box_left, box_right);
 }
 
-bool BhvNode::Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_record) const
+bool BvhNode::Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_record) const
 {
     if (!bounding_box_.Hit(ray, t_min, t_max))
     {
@@ -67,19 +63,19 @@ bool BhvNode::Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_re
     return hit_left || hit_right;
 }
 
-bool BhvNode::CreateBoundingBox(double t_end, AABB& output_box) const
+bool BvhNode::CreateBoundingBox(double t_end, AABB& output_box) const
 {
     output_box = bounding_box_;
     return true;
 }
 
 /*
-double BhvNode::PdfValue(const Vector3& origin, const Vector3& v) const
+double BvhNode::PdfValue(const Vector3& origin, const Vector3& v) const
 {
     return 
 }
 
-Vector3 BhvNode::GetRandom(const Vector3& origin) const
+Vector3 BvhNode::GetRandom(const Vector3& origin) const
 {
     int int_size = static_cast<int>(objects.size());
     return objects[GetRandomInt(int_size - 1)]->GetRandom(origin);

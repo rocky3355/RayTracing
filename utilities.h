@@ -8,21 +8,23 @@ namespace raytracing
 const double Infinity = std::numeric_limits<double>::infinity();
 
 // TODO: all inline?
-inline double GetRandomDouble() {
+inline double GetRandomDouble()
+{
     static std::uniform_real_distribution<double> distribution(0.0, 1.0);
     static std::mt19937 generator;
     return distribution(generator);
 }
 
-inline double GetRandomDouble(double min, double max) {
+inline double GetRandomDouble(double min, double max)
+{
     // Returns a random real in [min,max).
     return min + (max - min) * GetRandomDouble();
 }
 
 // TODO: Check if this is working
-inline int GetRandomInt(int max)
+inline int GetRandomInt(int min, int max)
 {
-    return static_cast<int>(std::round(GetRandomDouble() * max));
+    return static_cast<int>(GetRandomDouble(min, max + 1));
 }
 
 inline double Clamp(double x, double min, double max)
