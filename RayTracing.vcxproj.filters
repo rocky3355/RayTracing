@@ -13,6 +13,24 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Headerdateien\Materials">
+      <UniqueIdentifier>{65986dfb-8790-4b30-a605-59f6c0b93de1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Textures">
+      <UniqueIdentifier>{ecff4d6a-d131-47c4-ab78-107b017c7b5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Hittables">
+      <UniqueIdentifier>{662880ce-d1eb-43e1-a81a-9c96e9e776f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\Materials">
+      <UniqueIdentifier>{add13769-ca02-4859-a5e0-4e6c48962b7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\Textures">
+      <UniqueIdentifier>{4bee64e7-5ac7-4c3d-b962-dd62503598dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\Hittables">
+      <UniqueIdentifier>{c7749ecb-9334-4371-9329-e100624f6f7d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -24,67 +42,13 @@
     <ClCompile Include="ray3.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="sphere.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="hittable_list.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="camera.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="lambertian_material.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="metal_material.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="dielectric_material.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="aabb.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="texture.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="solid_color.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="checker_texture.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="perlin.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="noise_texture.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="image_texure.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="diffuse_light.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="aa_rect.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="flip_face.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="box.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="rotation.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="translation.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="constant_medium.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="isotropic_material.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ortho_normal_basis.cpp">
@@ -93,10 +57,70 @@
     <ClCompile Include="pdf.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="bvh_node.cpp">
+    <ClCompile Include="filter.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="filter.cpp">
+    <ClCompile Include="aa_rect.cpp">
+      <Filter>Quelldateien\Hittables</Filter>
+    </ClCompile>
+    <ClCompile Include="box.cpp">
+      <Filter>Quelldateien\Hittables</Filter>
+    </ClCompile>
+    <ClCompile Include="bvh_node.cpp">
+      <Filter>Quelldateien\Hittables</Filter>
+    </ClCompile>
+    <ClCompile Include="flip_face.cpp">
+      <Filter>Quelldateien\Hittables</Filter>
+    </ClCompile>
+    <ClCompile Include="hittable_list.cpp">
+      <Filter>Quelldateien\Hittables</Filter>
+    </ClCompile>
+    <ClCompile Include="rotation.cpp">
+      <Filter>Quelldateien\Hittables</Filter>
+    </ClCompile>
+    <ClCompile Include="sphere.cpp">
+      <Filter>Quelldateien\Hittables</Filter>
+    </ClCompile>
+    <ClCompile Include="translation.cpp">
+      <Filter>Quelldateien\Hittables</Filter>
+    </ClCompile>
+    <ClCompile Include="constant_medium.cpp">
+      <Filter>Quelldateien\Hittables</Filter>
+    </ClCompile>
+    <ClCompile Include="dielectric_material.cpp">
+      <Filter>Quelldateien\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="diffuse_light.cpp">
+      <Filter>Quelldateien\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="isotropic_material.cpp">
+      <Filter>Quelldateien\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="lambertian_material.cpp">
+      <Filter>Quelldateien\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="metal_material.cpp">
+      <Filter>Quelldateien\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="checker_texture.cpp">
+      <Filter>Quelldateien\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="image_texure.cpp">
+      <Filter>Quelldateien\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="noise_texture.cpp">
+      <Filter>Quelldateien\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>Quelldateien\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="solid_color.cpp">
+      <Filter>Quelldateien\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="ray_tracer.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="scene_creator.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -107,79 +131,16 @@
     <ClInclude Include="ray3.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="sphere.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="hittable.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="hittable_list.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="utilities.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="camera.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="material.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="lambertian_material.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="metal_material.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="dielectric_material.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="aabb.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="texture.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="solid_color.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="checker_texture.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="perlin.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="noise_texture.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="stb_image.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="image_texure.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="diffuse_light.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="aa_rect.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="flip_face.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="box.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="rotation.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="translation.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="constant_medium.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="isotropic_material.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="ortho_normal_basis.h">
@@ -188,11 +149,89 @@
     <ClInclude Include="pdf.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="bvh_node.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="filter.h">
       <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="isotropic_material.h">
+      <Filter>Headerdateien\Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="lambertian_material.h">
+      <Filter>Headerdateien\Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="metal_material.h">
+      <Filter>Headerdateien\Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="material.h">
+      <Filter>Headerdateien\Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="diffuse_light.h">
+      <Filter>Headerdateien\Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="dielectric_material.h">
+      <Filter>Headerdateien\Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="checker_texture.h">
+      <Filter>Headerdateien\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="image_texure.h">
+      <Filter>Headerdateien\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="solid_color.h">
+      <Filter>Headerdateien\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="aa_rect.h">
+      <Filter>Headerdateien\Hittables</Filter>
+    </ClInclude>
+    <ClInclude Include="box.h">
+      <Filter>Headerdateien\Hittables</Filter>
+    </ClInclude>
+    <ClInclude Include="bvh_node.h">
+      <Filter>Headerdateien\Hittables</Filter>
+    </ClInclude>
+    <ClInclude Include="constant_medium.h">
+      <Filter>Headerdateien\Hittables</Filter>
+    </ClInclude>
+    <ClInclude Include="flip_face.h">
+      <Filter>Headerdateien\Hittables</Filter>
+    </ClInclude>
+    <ClInclude Include="hittable.h">
+      <Filter>Headerdateien\Hittables</Filter>
+    </ClInclude>
+    <ClInclude Include="hittable_list.h">
+      <Filter>Headerdateien\Hittables</Filter>
+    </ClInclude>
+    <ClInclude Include="noise_texture.h">
+      <Filter>Headerdateien\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="translation.h">
+      <Filter>Headerdateien\Hittables</Filter>
+    </ClInclude>
+    <ClInclude Include="rotation.h">
+      <Filter>Headerdateien\Hittables</Filter>
+    </ClInclude>
+    <ClInclude Include="sphere.h">
+      <Filter>Headerdateien\Hittables</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>Headerdateien\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Headerdateien\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="ray_tracer.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="scene_creator.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="all_materials.h">
+      <Filter>Headerdateien\Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="all_hittables.h">
+      <Filter>Headerdateien\Hittables</Filter>
+    </ClInclude>
+    <ClInclude Include="all_textures.h">
+      <Filter>Headerdateien\Textures</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

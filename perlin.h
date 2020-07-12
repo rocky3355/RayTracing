@@ -4,7 +4,8 @@
 
 namespace raytracing
 {
-class Perlin {
+class Perlin
+{
 public:
     Perlin();
     ~Perlin();

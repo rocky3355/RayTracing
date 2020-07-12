@@ -4,7 +4,8 @@
 
 namespace raytracing
 {
-class Translation : public Hittable {
+class Translation : public Hittable
+{
 public:
     Translation(std::shared_ptr<Hittable> object, const Vector3& translation);
     virtual bool Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_record) const;

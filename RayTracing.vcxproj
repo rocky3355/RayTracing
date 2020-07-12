@@ -166,7 +166,9 @@
     <ClCompile Include="pdf.cpp" />
     <ClCompile Include="perlin.cpp" />
     <ClCompile Include="ray3.cpp" />
+    <ClCompile Include="ray_tracer.cpp" />
     <ClCompile Include="rotation.cpp" />
+    <ClCompile Include="scene_creator.cpp" />
     <ClCompile Include="solid_color.cpp" />
     <ClCompile Include="sphere.cpp" />
     <ClCompile Include="texture.cpp" />
@@ -176,6 +178,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="aabb.h" />
+    <ClInclude Include="all_hittables.h" />
+    <ClInclude Include="all_materials.h" />
+    <ClInclude Include="all_textures.h" />
     <ClInclude Include="bvh_node.h" />
     <ClInclude Include="box.h" />
     <ClInclude Include="camera.h" />
@@ -194,7 +199,9 @@
     <ClInclude Include="ortho_normal_basis.h" />
     <ClInclude Include="pdf.h" />
     <ClInclude Include="perlin.h" />
+    <ClInclude Include="ray_tracer.h" />
     <ClInclude Include="rotation.h" />
+    <ClInclude Include="scene_creator.h" />
     <ClInclude Include="solid_color.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="texture.h" />

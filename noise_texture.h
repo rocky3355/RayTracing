@@ -5,7 +5,8 @@
 
 namespace raytracing
 {
-class NoiseTexture : public Texture {
+class NoiseTexture : public Texture
+{
 public:
     NoiseTexture(double scale = 1.0);
     virtual Vector3 GetColor(double u, double v, const Vector3& p) const;
