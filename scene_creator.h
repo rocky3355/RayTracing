@@ -9,8 +9,8 @@ namespace raytracing
 class SceneCreator
 {
 public:
-	//HittableList CreateRandomScene() const;
-	HittableList CornellBox(Camera& camera, double aspect, std::shared_ptr<HittableList> lights) const;
-	BvhNode FinalSceneChapterTwo(Camera& camera, double aspect, std::shared_ptr<HittableList> lights) const;
+	BvhNode CreateRandomScene(Camera& camera, std::shared_ptr<HittableList> lights) const;
+	HittableList CornellBox(Camera& camera, std::shared_ptr<HittableList> lights) const;
+	BvhNode FinalSceneChapterTwo(Camera& camera, std::shared_ptr<HittableList> lights) const;
 };
 }  // namespace raytracing

@@ -29,7 +29,7 @@ const uint8_t* RayTracer::Render(const RayTracingOptions& options, const Camera&
 	percentage_finished = 0;
 	number_of_rendered_pixels_ = 0;
 
-	int image_height = static_cast<int>(options.image_width / options.aspect_ratio);
+	int image_height = static_cast<int>(options.image_width / camera.aspect_ratio);
 	int image_width_extended = options.image_width + 2;
 	int image_height_extended = image_height + 2;
 	int number_of_pixels = options.image_width * image_height;
@@ -157,6 +157,8 @@ Vector3 RayTracer::RayColor(const Ray3& ray, const Vector3& background, const Hi
 
 	Ray3 scattered = Ray3(hit_record.point, pdf.Generate(), ray.time);
 	double pdf_val = pdf.Value(scattered.direction);
+
+	//return emitted + scatter_record.attenuation * hit_record.material->ScatterPdf(ray, hit_record, scattered);
 
 	return emitted
 		+ scatter_record.attenuation * hit_record.material->ScatterPdf(ray, hit_record, scattered)

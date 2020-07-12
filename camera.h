@@ -11,6 +11,8 @@ public:
     Camera(Vector3 origin, Vector3 look_at, Vector3 up, double vertical_fov, double aspect_ratio, double aperture, double focus_distance, double time_end);
     Ray3 GetRay(double u, double v) const;
 
+    double aspect_ratio;
+
 private:
     Vector3 origin_;
     Vector3 lower_left_corner_;

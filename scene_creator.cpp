@@ -6,8 +6,7 @@
 
 namespace raytracing
 {
-/*
-HittableList CreateRandomScene()
+BvhNode SceneCreator::CreateRandomScene(Camera& camera, std::shared_ptr<HittableList> lights) const
 {
 	HittableList world;
 
@@ -54,15 +53,25 @@ HittableList CreateRandomScene()
 	auto material2 = std::make_shared<LambertianMaterial>(std::make_shared<SolidColor>(Vector3(0.4, 0.2, 0.1)));
 	world.Add(std::make_shared<Sphere>(Vector3(-4, 1, 0), 1.0, material2));
 
-
-	auto material3 = std::make_shared<MetalMaterial>(Vector3(0.7, 0.6, 0.5), 0.0);
+	auto material3 = std::make_shared<DiffuseLight>(std::make_shared<SolidColor>(7.0, 7.0, 7.0));
 	world.Add(std::make_shared<Sphere>(Vector3(4, 1, 0), 1.0, material3));
 
-	return world;
-}
-*/
+	//lights->Add(std::make_shared<Sphere>(Vector3(4, 1, 0), 1.0, std::shared_ptr<Material>()));
 
-HittableList SceneCreator::CornellBox(Camera& camera, double aspect, std::shared_ptr<HittableList> lights) const
+	Vector3 origin(13, 3, 7);
+	Vector3 look_at(0, 1, 0);
+	Vector3 up(0, 1, 0);
+	double dist_to_focus = 10.0;
+	double aperture = 0.1;
+	double vfov = 20.0;
+	double aspect = 16.0 / 9.0;
+	double time_end = 1.0;
+
+	camera = Camera(origin, look_at, up, vfov, aspect, aperture, dist_to_focus, time_end);
+	return BvhNode(world, time_end);
+}
+
+HittableList SceneCreator::CornellBox(Camera& camera, std::shared_ptr<HittableList> lights) const
 {
 	HittableList world;
 
@@ -99,16 +108,17 @@ HittableList SceneCreator::CornellBox(Camera& camera, double aspect, std::shared
 	Vector3 origin(278, 278, -800);
 	Vector3 look_at(278, 278, 0);
 	Vector3 up(0, 1, 0);
-	auto dist_to_focus = 10.0;
-	auto aperture = 0.0;
-	auto vfov = 40.0;
-	auto t_end = 1.0;
+	double dist_to_focus = 10.0;
+	double aperture = 0.0;
+	double vfov = 40.0;
+	double aspect = 1.0;
+	double t_end = 1.0;
 
 	camera = Camera(origin, look_at, up, vfov, aspect, aperture, dist_to_focus, t_end);
 	return world;
 }
 
-BvhNode SceneCreator::FinalSceneChapterTwo(Camera& camera, double aspect, std::shared_ptr<HittableList> lights) const
+BvhNode SceneCreator::FinalSceneChapterTwo(Camera& camera, std::shared_ptr<HittableList> lights) const
 {
 	HittableList boxes1;
 	auto ground = std::make_shared<LambertianMaterial>(std::make_shared<SolidColor>(0.48, 0.83, 0.53));
@@ -179,10 +189,11 @@ BvhNode SceneCreator::FinalSceneChapterTwo(Camera& camera, double aspect, std::s
 	Vector3 origin(478, 278, -600);
 	Vector3 look_at(278, 278, 0);
 	Vector3 up(0, 1, 0);
-	auto dist_to_focus = 10.0;
-	auto aperture = 0.0;
-	auto vfov = 40.0;
-	auto time_end = 1.0;
+	double dist_to_focus = 10.0;
+	double aperture = 0.0;
+	double vfov = 40.0;
+	double aspect = 1.0;
+	double time_end = 1.0;
 
 	camera = Camera(origin, look_at, up, vfov, aspect, aperture, dist_to_focus, time_end);
 	return BvhNode(objects, time_end);

@@ -59,7 +59,6 @@ bool BvhNode::Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_re
 
     bool hit_left = left_->Hit(ray, t_min, t_max, hit_record);
     bool hit_right = right_->Hit(ray, t_min, hit_left ? hit_record.t : t_max, hit_record);
-
     return hit_left || hit_right;
 }
 
@@ -68,17 +67,4 @@ bool BvhNode::CreateBoundingBox(double t_end, AABB& output_box) const
     output_box = bounding_box_;
     return true;
 }
-
-/*
-double BvhNode::PdfValue(const Vector3& origin, const Vector3& v) const
-{
-    return 
-}
-
-Vector3 BvhNode::GetRandom(const Vector3& origin) const
-{
-    int int_size = static_cast<int>(objects.size());
-    return objects[GetRandomInt(int_size - 1)]->GetRandom(origin);
-}
-*/
 }

@@ -7,7 +7,7 @@ Camera::Camera()
 }
 
 Camera::Camera(Vector3 origin, Vector3 look_at, Vector3 up, double vertical_fov, double aspect_ratio, double aperture, double focus_distance, double time_end)
-    : origin_(origin), time_end_(time_end)
+    : aspect_ratio(aspect_ratio), origin_(origin), time_end_(time_end)
 {
     double theta = DegreesToRadians(vertical_fov);
     double h = std::tan(theta / 2);

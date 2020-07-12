@@ -8,7 +8,6 @@ namespace raytracing
 struct RayTracingOptions
 {
 	int image_width;
-	double aspect_ratio;
 	int max_ray_depth;
 	int samples_per_pixel;
 	int number_of_threads;
