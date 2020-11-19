@@ -3,7 +3,7 @@
 
 namespace raytracing
 {
-RotationY::RotationY(std::shared_ptr<Hittable> object, double angle)
+RotationY::RotationY(Hittable* object, double angle)
     : object_(object)
 {
     double radians = DegreesToRadians(angle);

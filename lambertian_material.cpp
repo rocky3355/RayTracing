@@ -3,7 +3,7 @@
 
 namespace raytracing
 {
-LambertianMaterial::LambertianMaterial(std::shared_ptr<Texture> albedo)
+LambertianMaterial::LambertianMaterial(Texture* albedo)
 	: albedo_(albedo)
 {
 }
@@ -12,7 +12,7 @@ bool LambertianMaterial::Scatter(const Ray3& ray, const HitRecord& hit_record, S
 {
     scatter_record.is_specular = false;
     scatter_record.attenuation = albedo_->GetColor(hit_record.u, hit_record.v, hit_record.point);
-    scatter_record.pdf = std::make_shared<CosinePdf>(hit_record.normal);
+    scatter_record.pdf = new CosinePdf(hit_record.normal);
     return true;
 }
 

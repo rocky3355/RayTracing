@@ -128,7 +128,7 @@ int main()
 	options.background_color = Vector3(0.3, 0.5, 1.0);
 
 	Camera camera;
-	auto lights = std::make_shared<HittableList>();
+	auto lights = new HittableList();
 	SceneCreator scene_creator;
 	BvhNode scene = scene_creator.FinalSceneChapterTwo(camera, lights);
 

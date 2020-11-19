@@ -2,7 +2,7 @@
 
 namespace raytracing
 {
-DiffuseLight::DiffuseLight(std::shared_ptr<Texture> emit)
+DiffuseLight::DiffuseLight(Texture* emit)
 	: emit_(emit)
 {
 }

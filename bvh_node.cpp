@@ -9,7 +9,7 @@ BvhNode::BvhNode(HittableList& list, double time_end)
 {
 }
 
-BvhNode::BvhNode(std::vector<std::shared_ptr<Hittable>>& objects, size_t start, size_t end, double time_end)
+BvhNode::BvhNode(std::vector<Hittable*>& objects, size_t start, size_t end, double time_end)
 {
     int axis = GetRandomInt(0, 2);
     auto comparator = (axis == 0) ? &BvhNode::BoxXCompare : (axis == 1) ? &BvhNode::BoxYCompare : &BvhNode::BoxZCompare;
@@ -36,8 +36,8 @@ BvhNode::BvhNode(std::vector<std::shared_ptr<Hittable>>& objects, size_t start, 
     else {
         std::sort(objects.begin() + start, objects.begin() + end, comparator);
         auto mid = start + object_span / 2;
-        left_ = std::make_shared<BvhNode>(objects, start, mid, time_end);
-        right_ = std::make_shared<BvhNode>(objects, mid, end, time_end);
+        left_ = new BvhNode(objects, start, mid, time_end);
+        right_ = new BvhNode(objects, mid, end, time_end);
     }
 
     AABB box_left, box_right;

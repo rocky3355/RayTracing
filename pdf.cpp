@@ -27,7 +27,7 @@ Vector3 CosinePdf::Generate() const
 
 // ##########################################
 
-HittablePdf::HittablePdf(std::shared_ptr<Hittable> object, const Vector3& origin)
+HittablePdf::HittablePdf(Hittable* object, const Vector3& origin)
     : object_(object), origin_(origin)
 {
 }
@@ -44,7 +44,7 @@ Vector3 HittablePdf::Generate() const
 
 // ##########################################
 
-MixturePdf::MixturePdf(std::shared_ptr<Pdf> p0, std::shared_ptr<Pdf> p1)
+MixturePdf::MixturePdf(Pdf* p0, Pdf* p1)
 {
     p_[0] = p0;
     p_[1] = p1;

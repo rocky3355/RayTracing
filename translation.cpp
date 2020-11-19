@@ -2,7 +2,7 @@
 
 namespace raytracing
 {
-Translation::Translation(std::shared_ptr<Hittable> object, const Vector3& translation)
+Translation::Translation(Hittable* object, const Vector3& translation)
     : object_(object), translation_(translation)
 {
 

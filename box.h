@@ -7,7 +7,7 @@ namespace raytracing
 class Box : public Hittable
 {
 public:
-    Box(const Vector3& p0, const Vector3& p1, std::shared_ptr<Material> material);
+    Box(const Vector3& p0, const Vector3& p1, Material* material);
     virtual bool Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_record) const;
     virtual bool CreateBoundingBox(double t_end, AABB& bounding_box) const;
 

@@ -3,7 +3,7 @@
 
 namespace raytracing
 {
-Sphere::Sphere(Vector3 origin, double radius, std::shared_ptr<Material> material, const Vector3& velocity)
+Sphere::Sphere(Vector3 origin, double radius, Material* material, const Vector3& velocity)
 	: origin_(origin), radius_(radius), material_(material), velocity_(velocity)
 {
 }

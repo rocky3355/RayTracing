@@ -13,6 +13,6 @@ public:
 	virtual double PdfValue(const Vector3& origin, const Vector3& v) const;
 
 private:
-	std::shared_ptr<Material> material_;
+	Material* material_;
 };
 }  // namespace raytracing

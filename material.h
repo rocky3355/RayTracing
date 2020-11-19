@@ -10,7 +10,7 @@ struct ScatterRecord
     Ray3 specular_ray;
     bool is_specular;
     Vector3 attenuation;
-    std::shared_ptr<Pdf> pdf;
+    Pdf* pdf;
 };
 
 class Material

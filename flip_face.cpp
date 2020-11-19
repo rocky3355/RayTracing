@@ -2,7 +2,7 @@
 
 namespace raytracing
 {
-FlipFace::FlipFace(std::shared_ptr<Hittable> object)
+FlipFace::FlipFace(Hittable* object)
 	: object_(object)
 {
 }

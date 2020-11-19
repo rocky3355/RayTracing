@@ -3,10 +3,10 @@
 
 namespace raytracing
 {
-ConstantMedium::ConstantMedium(std::shared_ptr<Hittable> boundary, double density, std::shared_ptr<Texture> albedo)
+ConstantMedium::ConstantMedium(Hittable* boundary, double density, Texture* albedo)
 	: boundary_(boundary), neg_inv_density_(-1.0 / density)
 {
-	phase_function_ = std::make_shared<IsotropicMaterial>(albedo);
+	phase_function_ = new IsotropicMaterial(albedo);
 }
 
 bool ConstantMedium::Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_record) const

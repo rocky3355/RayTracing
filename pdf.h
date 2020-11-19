@@ -27,24 +27,24 @@ private:
 class HittablePdf : public Pdf
 {
 public:
-    HittablePdf(std::shared_ptr<Hittable> object, const Vector3& origin);
+    HittablePdf(Hittable* object, const Vector3& origin);
     virtual double Value(const Vector3& direction) const;
     virtual Vector3 Generate() const;
 
 private:
     Vector3 origin_;
-    std::shared_ptr<Hittable> object_;
+    Hittable* object_;
 };
 
 class MixturePdf : public Pdf
 {
 public:
-    MixturePdf(std::shared_ptr<Pdf> p0, std::shared_ptr<Pdf> p1);
+    MixturePdf(Pdf* p0, Pdf* p1);
     virtual double Value(const Vector3& direction) const;
     virtual Vector3 Generate() const;
 
 private:
-    std::shared_ptr<Pdf> p_[2];
+    Pdf* p_[2];
 };
 
 }  // namespace raytracing

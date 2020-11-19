@@ -24,7 +24,7 @@ RayTracer::~RayTracer()
 	}
 }
 
-const uint8_t* RayTracer::Render(const RayTracingOptions& options, const Camera& camera, const Hittable& scene, std::shared_ptr<Hittable> lights)
+const uint8_t* RayTracer::Render(const RayTracingOptions& options, const Camera& camera, const Hittable& scene, Hittable* lights)
 {
 	percentage_finished = 0;
 	number_of_rendered_pixels_ = 0;
@@ -83,7 +83,7 @@ const uint8_t* RayTracer::Render(const RayTracingOptions& options, const Camera&
 	return filtered_image_;
 }
 
-void RayTracer::RenderImagePart(RayTracingOptionsInternal options, const Camera& camera, const Hittable& scene, std::shared_ptr<Hittable> lights)
+void RayTracer::RenderImagePart(RayTracingOptionsInternal options, const Camera& camera, const Hittable& scene, Hittable* lights)
 {
 	for (size_t i = options.thread_start_idx; i <= options.thread_end_idx; ++i)
 	{
@@ -124,7 +124,7 @@ void RayTracer::RenderImagePart(RayTracingOptionsInternal options, const Camera&
 	}
 }
 
-Vector3 RayTracer::RayColor(const Ray3& ray, const Vector3& background, const Hittable& scene, std::shared_ptr<Hittable> lights, int depth) const
+Vector3 RayTracer::RayColor(const Ray3& ray, const Vector3& background, const Hittable& scene, Hittable* lights, int depth) const
 {
 	HitRecord hit_record;
 
@@ -153,7 +153,7 @@ Vector3 RayTracer::RayColor(const Ray3& ray, const Vector3& background, const Hi
 
 	// TODO: Dont create this everytime, just change hit_record.point and scatter_record.pdf within the Mixturepdf
 
-	std::shared_ptr<Pdf> light_pdf = std::make_shared<HittablePdf>(lights, hit_record.point);
+	Pdf* light_pdf = new HittablePdf(lights, hit_record.point);
 	MixturePdf pdf(light_pdf, scatter_record.pdf);
 
 	Ray3 scattered = Ray3(hit_record.point, pdf.Generate(), ray.time);

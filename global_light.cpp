@@ -6,7 +6,7 @@ namespace raytracing
 {
 GlobalLight::GlobalLight(Vector3 color)
 {
-	material_ = std::make_shared<LambertianMaterial>(std::make_shared<SolidColor>(color));
+	material_ = new LambertianMaterial(new SolidColor(color));
 }
 
 bool GlobalLight::Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_record) const

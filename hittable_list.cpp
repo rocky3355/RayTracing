@@ -4,7 +4,7 @@ namespace raytracing
 {
 HittableList::HittableList() { }
 
-HittableList::HittableList(std::shared_ptr<Hittable> object)
+HittableList::HittableList(Hittable* object)
 {
 	Add(object);
 }
@@ -14,7 +14,7 @@ void HittableList::Clear()
 	objects.clear();
 }
 
-void HittableList::Add(std::shared_ptr<Hittable> object)
+void HittableList::Add(Hittable* object)
 {
 	objects.push_back(object);
 }
@@ -25,7 +25,7 @@ bool HittableList::Hit(const Ray3& ray, double t_min, double t_max, HitRecord& h
     bool hit_anything = false;
     double closest_so_far = t_max;
 
-    for (const std::shared_ptr<Hittable>& object : objects)
+    for (const Hittable* object : objects)
     {
         if (object->Hit(ray, t_min, closest_so_far, temp_rec))
         {
@@ -48,7 +48,7 @@ bool HittableList::CreateBoundingBox(double t_end, AABB& bounding_box) const
     AABB temp_box;
     bool is_first_box = true;
 
-    for (const std::shared_ptr<Hittable>& object : objects)
+    for (const Hittable* object : objects)
     {
         if (!object->CreateBoundingBox(t_end, temp_box))
         {

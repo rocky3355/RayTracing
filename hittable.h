@@ -10,7 +10,7 @@ struct HitRecord
 {
 	Vector3 point;
 	Vector3 normal;
-	std::shared_ptr<Material> material;
+	Material* material;
 	double t;
 	double u;
 	double v;

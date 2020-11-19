@@ -2,7 +2,7 @@
 
 namespace raytracing
 {
-IsotropicMaterial::IsotropicMaterial(std::shared_ptr<Texture> albedo)
+IsotropicMaterial::IsotropicMaterial(Texture* albedo)
 	: albedo_(albedo)
 {
 }

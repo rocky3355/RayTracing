@@ -29,13 +29,13 @@ class RayTracer
 public:
 	RayTracer();
 	~RayTracer();
-	const uint8_t* Render(const RayTracingOptions& options, const Camera& camera, const Hittable& scene, std::shared_ptr<Hittable> lights);
+	const uint8_t* Render(const RayTracingOptions& options, const Camera& camera, const Hittable& scene, Hittable* lights);
 
 	int percentage_finished;
 
 private:
-	Vector3 RayColor(const Ray3& ray, const Vector3& background, const Hittable& scene, std::shared_ptr<Hittable> lights, int depth) const;
-	void RenderImagePart(RayTracingOptionsInternal options, const Camera& camera, const Hittable& scene, std::shared_ptr<Hittable> lights);
+	Vector3 RayColor(const Ray3& ray, const Vector3& background, const Hittable& scene, Hittable* lights, int depth) const;
+	void RenderImagePart(RayTracingOptionsInternal options, const Camera& camera, const Hittable& scene, Hittable* lights);
 
 	uint8_t* image_;
 	uint8_t* filtered_image_;

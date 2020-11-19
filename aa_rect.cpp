@@ -2,7 +2,7 @@
 
 namespace raytracing
 {
-XYRect::XYRect(double x0, double x1, double y0, double y1, double k, std::shared_ptr<Material> material)
+XYRect::XYRect(double x0, double x1, double y0, double y1, double k, Material* material)
 	: x0_(x0), x1_(x1), y0_(y0), y1_(y1), k_(k), material_(material)
 {
 }
@@ -39,7 +39,7 @@ bool XYRect::CreateBoundingBox(double t_end, AABB& bounding_box) const
 	return true;
 }
 
-XZRect::XZRect(double x0, double x1, double z0, double z1, double k, std::shared_ptr<Material> material)
+XZRect::XZRect(double x0, double x1, double z0, double z1, double k, Material* material)
     : x0_(x0), x1_(x1), z0_(z0), z1_(z1), k_(k), material_(material)
 {
 }
@@ -97,7 +97,7 @@ Vector3 XZRect::GetRandom(const Vector3& origin) const
     return random_point - origin;
 }
 
-YZRect::YZRect(double y0, double y1, double z0, double z1, double k, std::shared_ptr<Material> material)
+YZRect::YZRect(double y0, double y1, double z0, double z1, double k, Material* material)
     : y0_(y0), y1_(y1), z0_(z0), z1_(z1), k_(k), material_(material)
 {
 }
