@@ -8,11 +8,12 @@ LambertianMaterial::LambertianMaterial(Texture* albedo)
 {
 }
 
-bool LambertianMaterial::Scatter(const Ray3& ray, const HitRecord& hit_record, ScatterRecord& scatter_record) const
+bool LambertianMaterial::Scatter(const Ray3& ray, const HitRecord& hit_record, ScatterRecord& scatter_record)
 {
     scatter_record.is_specular = false;
     scatter_record.attenuation = albedo_->GetColor(hit_record.u, hit_record.v, hit_record.point);
-    scatter_record.pdf = new CosinePdf(hit_record.normal);
+    //pdf_.SetW(hit_record.normal);
+    scatter_record.pdf = CosinePdf(hit_record.normal);
     return true;
 }
 

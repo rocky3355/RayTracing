@@ -7,10 +7,10 @@ namespace raytracing
 {
 struct ScatterRecord
 {
-    Ray3 specular_ray;
-    bool is_specular;
-    Vector3 attenuation;
-    Pdf* pdf;
+    Ray3 specular_ray{};
+    bool is_specular{ false };
+    Vector3 attenuation{};
+    CosinePdf pdf{};
 };
 
 class Material
@@ -21,7 +21,7 @@ public:
         return VECTOR3_ZERO;
     }
     
-    virtual bool Scatter(const Ray3& ray, const HitRecord& hit_record, ScatterRecord& scatter_record) const
+    virtual bool Scatter(const Ray3& ray, const HitRecord& hit_record, ScatterRecord& scatter_record)
     {
         return false;
     }

@@ -7,7 +7,7 @@ DiffuseLight::DiffuseLight(Texture* emit)
 {
 }
 
-bool DiffuseLight::Scatter(const Ray3& ray, const HitRecord& hit_record, Vector3& attenuation, Ray3& scattered) const
+bool DiffuseLight::Scatter(const Ray3& ray, const HitRecord& hit_record, Vector3& attenuation, Ray3& scattered)
 {
 	return false;
 }

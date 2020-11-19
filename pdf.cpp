@@ -2,12 +2,12 @@
 
 namespace raytracing
 {
-Pdf::~Pdf()
-{
-    // TODO?
-}
 
 // ##########################################
+
+CosinePdf::CosinePdf()
+{
+}
 
 CosinePdf::CosinePdf(const Vector3& w)
 {
@@ -44,26 +44,21 @@ Vector3 HittablePdf::Generate() const
 
 // ##########################################
 
-MixturePdf::MixturePdf(Pdf* p0, Pdf* p1)
+// TODO: These can be static methods
+double MixturePdf::Value(const Pdf& p0, const Pdf& p1, const Vector3& direction) const
 {
-    p_[0] = p0;
-    p_[1] = p1;
+    return 0.5 * p0.Value(direction) + 0.5 * p1.Value(direction);
 }
 
-double MixturePdf::Value(const Vector3& direction) const
-{
-    return 0.5 * p_[0]->Value(direction) + 0.5 * p_[1]->Value(direction);
-}
-
-Vector3 MixturePdf::Generate() const
+Vector3 MixturePdf::Generate(const Pdf& p0, const Pdf& p1) const
 {
     if (GetRandomDouble() < 0.5)
     {
-        return p_[0]->Generate();
+        return p0.Generate();
     }
     else
     {
-        return p_[1]->Generate();
+        return p1.Generate();
     }
 }
 }  // namespace raytracing

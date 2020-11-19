@@ -152,12 +152,9 @@ Vector3 RayTracer::RayColor(const Ray3& ray, const Vector3& background, const Hi
 	}
 
 	// TODO: Dont create this everytime, just change hit_record.point and scatter_record.pdf within the Mixturepdf
-
-	Pdf* light_pdf = new HittablePdf(lights, hit_record.point);
-	MixturePdf pdf(light_pdf, scatter_record.pdf);
-
-	Ray3 scattered = Ray3(hit_record.point, pdf.Generate(), ray.time);
-	double pdf_val = pdf.Value(scattered.direction);
+	HittablePdf light_pdf(lights, hit_record.point);
+	Ray3 scattered = Ray3(hit_record.point, pdf_.Generate(light_pdf, scatter_record.pdf), ray.time);
+	double pdf_val = pdf_.Value(light_pdf, scatter_record.pdf, scattered.direction);
 
 	return emitted
 		+ scatter_record.attenuation * hit_record.material->ScatterPdf(ray, hit_record, scattered)

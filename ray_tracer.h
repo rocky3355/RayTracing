@@ -2,6 +2,7 @@
 
 #include "camera.h"
 #include "hittable_list.h"
+#include "pdf.h"
 
 namespace raytracing
 {
@@ -40,5 +41,6 @@ private:
 	uint8_t* image_;
 	uint8_t* filtered_image_;
 	int number_of_rendered_pixels_;
+	MixturePdf pdf_;
 };
 }  // namespace raytracing

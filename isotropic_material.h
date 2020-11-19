@@ -8,7 +8,7 @@ class IsotropicMaterial : public Material
 {
 public:
     IsotropicMaterial(Texture* albedo);
-    virtual bool Scatter(const Ray3& ray, const HitRecord& hit_record, ScatterRecord& scatter_record) const;
+    virtual bool Scatter(const Ray3& ray, const HitRecord& hit_record, ScatterRecord& scatter_record);
 
 private:
     Texture* albedo_;

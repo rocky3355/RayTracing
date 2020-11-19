@@ -1,0 +1,6 @@
+FinalSceneChapterTwo, 600, 50, 8, 50
+
+Original        163s
+Doubles         152s
+Raw pointers    145s
+No new for pdf  101s
