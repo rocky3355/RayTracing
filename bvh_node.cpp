@@ -56,7 +56,7 @@ bool BvhNode::Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_re
     {
         return false;
     }
-
+    
     bool hit_left = left_->Hit(ray, t_min, t_max, hit_record);
     bool hit_right = right_->Hit(ray, t_min, hit_left ? hit_record.t : t_max, hit_record);
     return hit_left || hit_right;

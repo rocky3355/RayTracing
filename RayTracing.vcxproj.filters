@@ -123,6 +123,9 @@
     <ClCompile Include="scene_creator.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="global_light.cpp">
+      <Filter>Quelldateien\Hittables</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vector3.h">
@@ -232,6 +235,9 @@
     </ClInclude>
     <ClInclude Include="all_textures.h">
       <Filter>Headerdateien\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="global_light.h">
+      <Filter>Headerdateien\Hittables</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

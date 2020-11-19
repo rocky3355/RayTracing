@@ -11,6 +11,7 @@ struct RayTracingOptions
 	int max_ray_depth;
 	int samples_per_pixel;
 	int number_of_threads;
+	Vector3 background_color;
 };
 
 struct RayTracingOptionsInternal

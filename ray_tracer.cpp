@@ -97,7 +97,7 @@ void RayTracer::RenderImagePart(RayTracingOptionsInternal options, const Camera&
 			double u = (x + GetRandomDouble()) / (options.image_width_extended - 1);
 			double v = (y + GetRandomDouble()) / (options.image_width_extended - 1);
 			Ray3 ray = camera.GetRay(u, v);
-			pixel_color += RayColor(ray, VECTOR3_ZERO, scene, lights, options.options.max_ray_depth);
+			pixel_color += RayColor(ray, options.options.background_color, scene, lights, options.options.max_ray_depth);
 		}
 
 		double red = pixel_color.x();
@@ -136,7 +136,6 @@ Vector3 RayTracer::RayColor(const Ray3& ray, const Vector3& background, const Hi
 	// If the ray hits nothing, return the background color.
 	if (!scene.Hit(ray, 0.001, Infinity, hit_record))
 	{
-		//return Vector3(0.0, 1.0, 0.0);
 		return background;
 	}
 
@@ -152,13 +151,13 @@ Vector3 RayTracer::RayColor(const Ray3& ray, const Vector3& background, const Hi
 		return scatter_record.attenuation * RayColor(scatter_record.specular_ray, background, scene, lights, depth - 1);
 	}
 
+	// TODO: Dont create this everytime, just change hit_record.point and scatter_record.pdf within the Mixturepdf
+
 	std::shared_ptr<Pdf> light_pdf = std::make_shared<HittablePdf>(lights, hit_record.point);
 	MixturePdf pdf(light_pdf, scatter_record.pdf);
 
 	Ray3 scattered = Ray3(hit_record.point, pdf.Generate(), ray.time);
 	double pdf_val = pdf.Value(scattered.direction);
-
-	//return emitted + scatter_record.attenuation * hit_record.material->ScatterPdf(ray, hit_record, scattered);
 
 	return emitted
 		+ scatter_record.attenuation * hit_record.material->ScatterPdf(ray, hit_record, scattered)

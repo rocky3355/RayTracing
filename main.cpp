@@ -20,6 +20,7 @@ using namespace raytracing;
 using namespace std::chrono_literals;
 
 bool rendering_finished = false;
+long counter;
 
 void PrintProgress(const RayTracer& ray_tracer)
 {
@@ -123,12 +124,13 @@ int main()
 	options.image_width = 600;
 	options.max_ray_depth = 50;
 	options.number_of_threads = 8;
-	options.samples_per_pixel = 10;
+	options.samples_per_pixel = 50;
+	options.background_color = Vector3(0.3, 0.5, 1.0);
 
 	Camera camera;
 	auto lights = std::make_shared<HittableList>();
 	SceneCreator scene_creator;
-	BvhNode scene = scene_creator.CreateRandomScene(camera, lights);
+	BvhNode scene = scene_creator.FinalSceneChapterTwo(camera, lights);
 
 	auto start = std::chrono::high_resolution_clock::now();
 

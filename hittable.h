@@ -36,7 +36,7 @@ public:
 
 	virtual Vector3 GetRandom(const Vector3& origin) const
 	{
-		return Vector3(1, 0, 0);
+		return Vector3(1.0, 0.0, 0.0);
 	}
 };
 }  // namespace raytracing

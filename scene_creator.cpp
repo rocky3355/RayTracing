@@ -53,10 +53,11 @@ BvhNode SceneCreator::CreateRandomScene(Camera& camera, std::shared_ptr<Hittable
 	auto material2 = std::make_shared<LambertianMaterial>(std::make_shared<SolidColor>(Vector3(0.4, 0.2, 0.1)));
 	world.Add(std::make_shared<Sphere>(Vector3(-4, 1, 0), 1.0, material2));
 
-	auto material3 = std::make_shared<DiffuseLight>(std::make_shared<SolidColor>(7.0, 7.0, 7.0));
+	auto material3 = std::make_shared<MetalMaterial>(Vector3(0.7, 0.6, 0.5), 0.1);
 	world.Add(std::make_shared<Sphere>(Vector3(4, 1, 0), 1.0, material3));
 
 	//lights->Add(std::make_shared<Sphere>(Vector3(4, 1, 0), 1.0, std::shared_ptr<Material>()));
+	//lights->Add(std::make_shared<GlobalLight>(Vector3(1.0, 1.0, 1.0)));
 
 	Vector3 origin(13, 3, 7);
 	Vector3 look_at(0, 1, 0);

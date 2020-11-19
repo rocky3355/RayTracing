@@ -27,8 +27,6 @@ bool ConstantMedium::Hit(const Ray3& ray, double t_min, double t_max, HitRecord&
         return false;
     }
 
-    //if (debugging) std::cerr << "\nt0=" << rec1.t << ", t1=" << rec2.t << '\n';
-
     if (rec1.t < t_min)
     {
         rec1.t = t_min;
