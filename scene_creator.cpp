@@ -72,7 +72,7 @@ BvhNode SceneCreator::CreateRandomScene(Camera& camera, HittableList* lights) co
 	return BvhNode(world, time_end);
 }
 
-HittableList SceneCreator::CornellBox(Camera& camera, HittableList* lights) const
+BvhNode SceneCreator::CornellBox(Camera& camera, HittableList* lights) const
 {
 	HittableList world;
 
@@ -116,7 +116,7 @@ HittableList SceneCreator::CornellBox(Camera& camera, HittableList* lights) cons
 	double t_end = 1.0;
 
 	camera = Camera(origin, look_at, up, vfov, aspect, aperture, dist_to_focus, t_end);
-	return world;
+	return BvhNode(world, t_end);
 }
 
 BvhNode SceneCreator::FinalSceneChapterTwo(Camera& camera, HittableList* lights) const

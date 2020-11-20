@@ -10,7 +10,7 @@ class SceneCreator
 {
 public:
 	BvhNode CreateRandomScene(Camera& camera, HittableList* lights) const;
-	HittableList CornellBox(Camera& camera, HittableList* lights) const;
+	BvhNode CornellBox(Camera& camera, HittableList* lights) const;
 	BvhNode FinalSceneChapterTwo(Camera& camera, HittableList* lights) const;
 };
 }  // namespace raytracing

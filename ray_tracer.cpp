@@ -30,6 +30,7 @@ const uint8_t* RayTracer::Render(const RayTracingOptions& options, const Camera&
 	number_of_rendered_pixels_ = 0;
 
 	int image_height = static_cast<int>(options.image_width / camera.aspect_ratio);
+	// +2 for the Median filter applied afterwards
 	int image_width_extended = options.image_width + 2;
 	int image_height_extended = image_height + 2;
 	int number_of_pixels = options.image_width * image_height;
@@ -68,7 +69,7 @@ const uint8_t* RayTracer::Render(const RayTracingOptions& options, const Camera&
 		start_idx = end_idx + 1;
 	}
 
-	for (size_t i = 0; i < options.number_of_threads; ++i)
+	for (size_t i = 0; i < render_threads.size(); ++i)
 	{
 		render_threads[i].join();
 	}

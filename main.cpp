@@ -14,6 +14,7 @@
 // TODO: Define "Color" as Vector3?
 // TODO: Rename attenuation to albedo?
 // TODO: Class forward where possible
+// TODO: Remove "new" where possible
 // TODO: Check parameter passing, i.e. use (hit_record) instad of (hit_record.u, hit_record.v, ...)
 
 using namespace raytracing;
@@ -124,7 +125,7 @@ int main()
 	options.image_width = 600;
 	options.max_ray_depth = 20;
 	options.number_of_threads = 8;
-	options.samples_per_pixel = 200;
+	options.samples_per_pixel = 500;
 	options.background_color = Vector3(0.0, 0.0, 0.0);
 
 	Camera camera;
