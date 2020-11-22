@@ -1,30 +1,19 @@
 #include "global_light.h"
-#include "lambertian_material.h"
-#include "solid_color.h"
 
 namespace raytracing
 {
-GlobalLight::GlobalLight(Vector3 color)
+GlobalLight::GlobalLight(const Vector3& color)
+    : color_(color)
 {
-	material_ = new LambertianMaterial(new SolidColor(color));
 }
 
-bool GlobalLight::Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_record) const
+bool GlobalLight::Scatter(const Ray3& ray, const HitRecord& hit_record, Vector3& attenuation, Ray3& scattered)
 {
-	hit_record.front_face = true;
-	hit_record.material = material_;
-	hit_record.normal = -ray.direction.UnitVector(); // TODO: Unit vector required?
-	//hit_record.point = ; // TODO
-	return true;
+    return false;
 }
 
-bool GlobalLight::CreateBoundingBox(double t_end, AABB& bounding_box) const
+Vector3 GlobalLight::Emit(const Ray3& ray, const HitRecord& hit_record) const
 {
-	return false;
-}
-
-double GlobalLight::PdfValue(const Vector3& origin, const Vector3& v) const
-{
-	return 1.0;
+    return color_;
 }
 }  // namespace raytracing

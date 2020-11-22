@@ -6,13 +6,35 @@
 
 namespace raytracing
 {
+
+BvhNode SceneCreator::CreateSimpleScene(Camera& camera, HittableList* lights) const
+{
+	HittableList world;
+	world.Add(new Sphere(Vector3(0, -100.5, -1), 100, new LambertianMaterial(new SolidColor(Vector3(1.0, 0.0, 0.0)))));
+	world.Add(new Sphere(Vector3(0, 0, -1), 0.5, new MetalMaterial(Vector3(0.0, 0.0, 1.0), 0.5)));
+	Vector3 origin(13, 3, 7);
+	Vector3 look_at(0, 1, 0);
+	Vector3 up(0, 1, 0);
+	double dist_to_focus = 10.0;
+	double aperture = 0.1;
+	double vfov = 20.0;
+	double aspect = 16.0 / 9.0;
+	double time_end = 1.0;
+
+	lights->Add(new Sphere(Vector3(0, 0, -2), 0.5, new Material()));
+
+	camera = Camera(origin, look_at, up, vfov, aspect, aperture, dist_to_focus, time_end);
+	return BvhNode(world, time_end);
+}
+
 BvhNode SceneCreator::CreateRandomScene(Camera& camera, HittableList* lights) const
 {
 	HittableList world;
 
 	CheckerTexture* checker_texture = new CheckerTexture(
 		new SolidColor(Vector3(0.2, 0.3, 0.1)),
-		new SolidColor(Vector3(0.9, 0.9, 0.9)));
+		new SolidColor(Vector3(0.9, 0.9, 0.9))
+	);
 
 	auto ground_material = new LambertianMaterial(checker_texture);
 	world.Add(new Sphere(Vector3(0, -1000, 0), 1000, ground_material));
@@ -34,9 +56,10 @@ BvhNode SceneCreator::CreateRandomScene(Camera& camera, HittableList* lights) co
 				else if (choose_mat < 0.95) {
 					// metal
 					auto albedo = Vector3::GetRandom(0.5, 1);
-					auto fuzz = GetRandomDouble(0, 0.5);
-					sphere_material = new MetalMaterial(albedo, fuzz);
-					world.Add(new Sphere(center, 0.2, sphere_material));
+					//auto fuzz = GetRandomDouble(0, 0.5);
+					//sphere_material = new MetalMaterial(albedo, fuzz);
+					world.Add(new Sphere(center, 0.2, new DiffuseLight(new SolidColor(albedo))));
+					lights->Add(new Sphere(center, 0.2, new Material()));
 				}
 				else {
 					// glass
@@ -55,17 +78,20 @@ BvhNode SceneCreator::CreateRandomScene(Camera& camera, HittableList* lights) co
 
 	auto material3 = new MetalMaterial(Vector3(0.7, 0.6, 0.5), 0.1);
 	world.Add(new Sphere(Vector3(4, 1, 0), 1.0, material3));
+	
+	//world.Add(new AlwaysHit(new GlobalLight(Vector3(1.0, 1.0, 1.0))));
+	//lights->Add(new AlwaysHit(new Material()));
 
-	//lights->Add(new Sphere(Vector3(4, 1, 0), 1.0, Material*()));
-	//lights->Add(new GlobalLight(Vector3(1.0, 1.0, 1.0)));
+	/*world.Add(new Sphere(Vector3(4, 1, 0), 1.0, new DiffuseLight());
+	lights->Add(new Sphere(center, 0.2, new Material()));*/
 
-	Vector3 origin(13, 3, 7);
-	Vector3 look_at(0, 1, 0);
+	Vector3 origin(10, 3, 8);
+	Vector3 look_at(0, 2, 0);
 	Vector3 up(0, 1, 0);
 	double dist_to_focus = 10.0;
 	double aperture = 0.1;
-	double vfov = 20.0;
-	double aspect = 16.0 / 9.0;
+	double vfov = 45.0;
+	double aspect = 4.0 / 3.0;
 	double time_end = 1.0;
 
 	camera = Camera(origin, look_at, up, vfov, aspect, aperture, dist_to_focus, time_end);
@@ -157,13 +183,11 @@ BvhNode SceneCreator::FinalSceneChapterTwo(Camera& camera, HittableList* lights)
 	objects.Add(new Sphere(Vector3(260, 150, 45), 50, new DielectricMaterial(1.5)));
 	objects.Add(new Sphere(
 		Vector3(0, 150, 145), 50, new MetalMaterial(Vector3(0.8, 0.8, 0.9), 0.0)
-		));
+	));
 
 	auto boundary = new Sphere(Vector3(360, 150, 145), 70, new DielectricMaterial(1.5));
 	objects.Add(boundary);
-	objects.Add(new ConstantMedium(
-		boundary, 0.2, new SolidColor(0.2, 0.4, 0.9)
-		));
+	objects.Add(new ConstantMedium(boundary, 0.2, new SolidColor(0.2, 0.4, 0.9)));
 	boundary = new Sphere(Vector3(0, 0, 0), 5000, new DielectricMaterial(1.5));
 	objects.Add(new ConstantMedium(
 		boundary, .0001, new SolidColor(1, 1, 1)));
@@ -176,16 +200,12 @@ BvhNode SceneCreator::FinalSceneChapterTwo(Camera& camera, HittableList* lights)
 	HittableList boxes2;
 	auto white = new LambertianMaterial(new SolidColor(.73, .73, .73));
 	int ns = 1000;
-	for (int j = 0; j < ns; j++) {
+	for (int j = 0; j < ns; j++)
+	{
 		boxes2.Add(new Sphere(Vector3::GetRandom(0, 165), 10, white));
 	}
 
-	objects.Add(new Translation(
-		new RotationY(
-			new BvhNode(boxes2, 1.0), 15),
-		Vector3(-100, 270, 395)
-		)
-	);
+	objects.Add(new Translation(new RotationY(new BvhNode(boxes2, 1.0), 15),Vector3(-100, 270, 395)));
 
 	Vector3 origin(478, 278, -600);
 	Vector3 look_at(278, 278, 0);

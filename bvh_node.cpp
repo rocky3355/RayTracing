@@ -9,11 +9,10 @@ BvhNode::BvhNode(HittableList& list, double time_end)
 {
 }
 
-BvhNode::BvhNode(std::vector<Hittable*>& objects, size_t start, size_t end, double time_end)
+BvhNode::BvhNode(std::vector<Hittable*>& objects, std::size_t start, std::size_t end, double time_end)
 {
     int axis = GetRandomInt(0, 2);
     auto comparator = (axis == 0) ? &BvhNode::BoxXCompare : (axis == 1) ? &BvhNode::BoxYCompare : &BvhNode::BoxZCompare;
-
     size_t object_span = end - start;
 
     if (object_span == 1)

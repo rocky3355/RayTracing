@@ -10,7 +10,6 @@ DielectricMaterial::DielectricMaterial(double refraction_index)
 bool DielectricMaterial::Scatter(const Ray3& ray, const HitRecord& hit_record, ScatterRecord& scatter_record)
 {
     scatter_record.is_specular = true;
-    //scatter_record.pdf = nullptr;
     scatter_record.attenuation = VECTOR3_UNIT_XYZ;
 
     double etai_over_etat = (hit_record.front_face) ? (1.0 / refraction_index_) : refraction_index_;

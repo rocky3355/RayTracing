@@ -16,6 +16,7 @@
 // TODO: Class forward where possible
 // TODO: Remove "new" where possible
 // TODO: Check parameter passing, i.e. use (hit_record) instad of (hit_record.u, hit_record.v, ...)
+// TODO: Remove unused parameters by removing parameter names in fuction declarations/implementations
 
 using namespace raytracing;
 using namespace std::chrono_literals;
@@ -122,16 +123,16 @@ int main()
 	//return 0;
 
 	RayTracingOptions options;
-	options.image_width = 600;
+	options.image_width = 800;
 	options.max_ray_depth = 20;
 	options.number_of_threads = 8;
-	options.samples_per_pixel = 500;
+	options.samples_per_pixel = 50;
 	options.background_color = Vector3(0.0, 0.0, 0.0);
 
 	Camera camera;
 	auto lights = new HittableList();
 	SceneCreator scene_creator;
-	BvhNode scene = scene_creator.FinalSceneChapterTwo(camera, lights);
+	BvhNode scene = scene_creator.CreateRandomScene(camera, lights);
 
 	auto start = std::chrono::high_resolution_clock::now();
 

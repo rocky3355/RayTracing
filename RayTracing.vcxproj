@@ -147,6 +147,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="aabb.cpp" />
+    <ClCompile Include="always_hit.cpp" />
     <ClCompile Include="bvh_node.cpp" />
     <ClCompile Include="box.cpp" />
     <ClCompile Include="camera.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="all_hittables.h" />
     <ClInclude Include="all_materials.h" />
     <ClInclude Include="all_textures.h" />
+    <ClInclude Include="always_hit.h" />
     <ClInclude Include="bvh_node.h" />
     <ClInclude Include="box.h" />
     <ClInclude Include="camera.h" />

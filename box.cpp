@@ -4,7 +4,8 @@
 
 namespace raytracing
 {
-Box::Box(const Vector3& p0, const Vector3& p1, Material* material) {
+Box::Box(const Vector3& p0, const Vector3& p1, Material* material)
+{
     box_min_ = p0;
     box_max_ = p1;
 

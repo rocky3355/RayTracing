@@ -7,7 +7,7 @@ namespace raytracing
 class BvhNode : public Hittable
 {
 public:
-    BvhNode(HittableList& list, double time_end);
+    BvhNode(HittableList& list, double time_end = 0.0);
     BvhNode(std::vector<Hittable*>& objects, size_t start, size_t end, double time_end);
     virtual bool Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_record) const;
     virtual bool CreateBoundingBox(double t_end, AABB& output_box) const;

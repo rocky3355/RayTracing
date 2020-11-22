@@ -136,8 +136,10 @@ Vector3 RayTracer::RayColor(const Ray3& ray, const Vector3& background, const Hi
 
 	ScatterRecord scatter_record;
 	Vector3 emitted = hit_record.material->Emit(ray, hit_record);
+
 	if (!hit_record.material->Scatter(ray, hit_record, scatter_record))
 	{
+		// Only light sources don't scatter
 		return emitted;
 	}
 
@@ -146,14 +148,13 @@ Vector3 RayTracer::RayColor(const Ray3& ray, const Vector3& background, const Hi
 		return scatter_record.attenuation * RayColor(scatter_record.specular_ray, background, scene, lights, depth - 1);
 	}
 
-	// TODO: Dont create this everytime, just change hit_record.point and scatter_record.pdf within the Mixturepdf
 	HittablePdf light_pdf(lights, hit_record.point);
 	Ray3 scattered = Ray3(hit_record.point, pdf_.Generate(light_pdf, scatter_record.pdf), ray.time);
-	double pdf_val = pdf_.Value(light_pdf, scatter_record.pdf, scattered.direction);
+	double pdf_value = pdf_.Value(light_pdf, scatter_record.pdf, scattered.direction);
 
 	return emitted
 		+ scatter_record.attenuation * hit_record.material->ScatterPdf(ray, hit_record, scattered)
 		* RayColor(scattered, background, scene, lights, depth - 1)
-		/ pdf_val;
+		/ pdf_value;
 }
 }  // namespace raytracing

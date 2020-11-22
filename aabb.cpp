@@ -32,6 +32,7 @@ bool AABB::Hit(const Ray3& ray, double t_min, double t_max) const
             return false;
         }
     }
+
     return true;
 }
 }  // namespace raytracing

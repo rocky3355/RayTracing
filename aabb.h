@@ -10,6 +10,7 @@ public:
     AABB();
     AABB(const Vector3& min, const Vector3& max);
     bool Hit(const Ray3& ray, double t_min, double t_max) const;
+
     static AABB GetSurroundingBox(AABB box0, AABB box1)
     {
         Vector3 small(std::fmin(box0.min.x(), box1.min.x()),

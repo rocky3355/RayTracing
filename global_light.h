@@ -1,18 +1,18 @@
 #pragma once
 
-#include "hittable.h"
+#include "material.h"
+#include "texture.h"
 
 namespace raytracing
 {
-class GlobalLight : public Hittable
+class GlobalLight : public Material
 {
 public:
-	GlobalLight(Vector3 color);
-	virtual bool Hit(const Ray3& ray, double t_min, double t_max, HitRecord& hit_record) const;
-	virtual bool CreateBoundingBox(double t_end, AABB& bounding_box) const;
-	virtual double PdfValue(const Vector3& origin, const Vector3& v) const;
+    GlobalLight(const Vector3& color);
+    virtual bool Scatter(const Ray3& ray, const HitRecord& hit_record, Vector3& attenuation, Ray3& scattered);
+    virtual Vector3 Emit(const Ray3& ray, const HitRecord& hit_record) const;
 
 private:
-	Material* material_;
+    Vector3 color_;
 };
 }  // namespace raytracing

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "aa_rect.h"
+#include "always_hit.h"
 #include "box.h"
 #include "bvh_node.h"
 #include "constant_medium.h"
