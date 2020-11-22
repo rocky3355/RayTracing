@@ -46,30 +46,24 @@ const uint8_t* RayTracer::Render(const RayTracingOptions& options, const Camera&
 		return nullptr;
 	}
 
-	int start_idx = 0;
 	std::vector<std::thread> render_threads;
 
-	for (size_t i = 0; i < options.number_of_threads; ++i)
+	for (std::size_t i = 0U; i < options.number_of_threads; ++i)
 	{
-		int end_idx = start_idx + pixels_per_thread;
-		end_idx = end_idx >= number_of_pixels_extended ? (number_of_pixels_extended - 1) : end_idx;
-		
 		RayTracingOptionsInternal internal_options;
 		internal_options.options = options;
 		internal_options.image_width_extended = image_width_extended;
 		internal_options.image_height_extended = image_height_extended;
-		internal_options.thread_end_idx = end_idx;
-		internal_options.thread_start_idx = start_idx;
+		internal_options.thread_start_idx = i;
+		internal_options.number_of_threads = options.number_of_threads;
 		internal_options.number_of_pixels = number_of_pixels_extended;
 
 		// TODO: Correct capture?
 		render_threads.emplace_back([this, internal_options, &camera, &scene, &lights] {
 			this->RenderImagePart(internal_options, camera, scene, lights); });
-
-		start_idx = end_idx + 1;
 	}
 
-	for (size_t i = 0; i < render_threads.size(); ++i)
+	for (std::size_t i = 0U; i < render_threads.size(); ++i)
 	{
 		render_threads[i].join();
 	}
@@ -86,7 +80,7 @@ const uint8_t* RayTracer::Render(const RayTracingOptions& options, const Camera&
 
 void RayTracer::RenderImagePart(RayTracingOptionsInternal options, const Camera& camera, const Hittable& scene, Hittable* lights)
 {
-	for (size_t i = options.thread_start_idx; i <= options.thread_end_idx; ++i)
+	for (std::size_t i = options.thread_start_idx; i < options.number_of_pixels; i += options.number_of_threads)
 	{
 		int y = options.image_height_extended - i / options.image_width_extended - 1;
 		int x = i % options.image_width_extended;

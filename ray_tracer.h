@@ -4,6 +4,8 @@
 #include "hittable_list.h"
 #include "pdf.h"
 
+// TODO: Use std (uint8_t, size_t, ...) types?
+
 namespace raytracing
 {
 struct RayTracingOptions
@@ -18,8 +20,8 @@ struct RayTracingOptions
 struct RayTracingOptionsInternal
 {
 	RayTracingOptions options;
+	int number_of_threads;
 	int thread_start_idx;
-	int thread_end_idx;
 	int image_width_extended;
 	int image_height_extended;
 	int number_of_pixels;
