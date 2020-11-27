@@ -7,12 +7,12 @@ DiffuseLight::DiffuseLight(Texture* emit)
 {
 }
 
-bool DiffuseLight::Scatter(const Ray3& ray, const HitRecord& hit_record, Vector3& attenuation, Ray3& scattered)
+bool DiffuseLight::Scatter(const Ray3& ray, const HitRecord& hit_record, Vector3& attenuation, Ray3& scattered_ray) const
 {
 	return false;
 }
 
-Vector3 DiffuseLight::Emit(const Ray3& ray, const HitRecord& hit_record) const
+Vector3 DiffuseLight::Emit(const HitRecord& hit_record) const
 {
     if (hit_record.front_face)
     {

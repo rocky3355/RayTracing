@@ -56,10 +56,10 @@ BvhNode SceneCreator::CreateRandomScene(Camera& camera, HittableList* lights) co
 				else if (choose_mat < 0.95) {
 					// metal
 					auto albedo = Vector3::GetRandom(0.5, 1);
-					//auto fuzz = GetRandomDouble(0, 0.5);
-					//sphere_material = new MetalMaterial(albedo, fuzz);
-					world.Add(new Sphere(center, 0.2, new DiffuseLight(new SolidColor(albedo))));
-					lights->Add(new Sphere(center, 0.2, new Material()));
+					auto fuzz = GetRandomDouble(0, 0.5);
+					sphere_material = new MetalMaterial(albedo, fuzz);
+					world.Add(new Sphere(center, 0.2, sphere_material));
+					//lights->Add(new Sphere(center, 0.2, new Material()));
 				}
 				else {
 					// glass

@@ -65,6 +65,12 @@ Vector3 Vector3::UnitVector() const
 	return (*this / GetLength());
 }
 
+bool Vector3::IsAlmostZero() const
+{
+	const auto s = 1e-8;
+	return (std::fabs(data[0]) < s) && (std::fabs(data[1]) < s) && (std::fabs(data[2]) < s);
+}
+
 double Vector3::GetLength() const
 {
 	return std::sqrt(GetLengthSquared());

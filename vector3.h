@@ -26,6 +26,7 @@ public:
 	double Dot(const Vector3& v) const;
 	Vector3 Cross(const Vector3& v) const;
 	Vector3 UnitVector() const;
+	bool IsAlmostZero() const;
 	static Vector3 Reflect(const Vector3& v, const Vector3& n);
 	static Vector3 Refract(const Vector3& uv, const Vector3& n, double etai_over_etat);
 	static Vector3 GetRandomInUnitSphere();

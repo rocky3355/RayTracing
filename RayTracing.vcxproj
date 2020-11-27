@@ -156,7 +156,6 @@
     <ClCompile Include="dielectric_material.cpp" />
     <ClCompile Include="diffuse_light.cpp" />
     <ClCompile Include="flip_face.cpp" />
-    <ClCompile Include="global_light.cpp" />
     <ClCompile Include="hittable_list.cpp" />
     <ClCompile Include="image_texure.cpp" />
     <ClCompile Include="isotropic_material.cpp" />
@@ -193,7 +192,6 @@
     <ClInclude Include="dielectric_material.h" />
     <ClInclude Include="diffuse_light.h" />
     <ClInclude Include="flip_face.h" />
-    <ClInclude Include="global_light.h" />
     <ClInclude Include="image_texure.h" />
     <ClInclude Include="isotropic_material.h" />
     <ClInclude Include="lambertian_material.h" />

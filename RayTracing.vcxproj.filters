@@ -123,9 +123,6 @@
     <ClCompile Include="scene_creator.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="global_light.cpp">
-      <Filter>Quelldateien\Materials</Filter>
-    </ClCompile>
     <ClCompile Include="always_hit.cpp">
       <Filter>Quelldateien\Hittables</Filter>
     </ClCompile>
@@ -238,9 +235,6 @@
     </ClInclude>
     <ClInclude Include="all_textures.h">
       <Filter>Headerdateien\Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="global_light.h">
-      <Filter>Headerdateien\Materials</Filter>
     </ClInclude>
     <ClInclude Include="always_hit.h">
       <Filter>Headerdateien\Hittables</Filter>

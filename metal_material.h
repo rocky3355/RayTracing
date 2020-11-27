@@ -8,7 +8,7 @@ class MetalMaterial : public Material
 {
 public:
 	MetalMaterial(const Vector3& albedo, double fuzz);
-	virtual bool Scatter(const Ray3& ray, const HitRecord& hit_record, ScatterRecord& scatter_record);
+	bool Scatter(const Ray3& ray, const HitRecord& hit_record, Vector3& attenuation, Ray3& scattered_ray) const override;
 
 private:
 	Vector3 albedo_;

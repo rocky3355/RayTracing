@@ -8,17 +8,18 @@ LambertianMaterial::LambertianMaterial(Texture* albedo)
 {
 }
 
-bool LambertianMaterial::Scatter(const Ray3& ray, const HitRecord& hit_record, ScatterRecord& scatter_record)
+bool LambertianMaterial::Scatter(const Ray3& ray, const HitRecord& hit_record, Vector3& attenuation, Ray3& scattered_ray) const
 {
-    scatter_record.is_specular = false;
-    scatter_record.attenuation = albedo_->GetColor(hit_record.u, hit_record.v, hit_record.point);
-    scatter_record.pdf = CosinePdf(hit_record.normal);
-    return true;
-}
+    Vector3 scatter_direction = hit_record.normal + Vector3::GetRandom();
 
-double LambertianMaterial::ScatterPdf(const Ray3& ray, const HitRecord& hit_record, const Ray3& scattered) const
-{
-    double cosine = hit_record.normal.Dot(scattered.direction.UnitVector());
-    return cosine < 0.0 ? 0.0 : cosine / M_PI;
+    // Catch degenerate scatter direction
+    if (scatter_direction.IsAlmostZero())
+    {
+        scatter_direction = hit_record.normal;
+    }
+
+    scattered_ray = Ray3(hit_record.point, scatter_direction, ray.time);
+    attenuation = albedo_->GetColor(hit_record.u, hit_record.v, hit_record.point);
+    return true;
 }
 }  // namespace raytracing

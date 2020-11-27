@@ -7,11 +7,10 @@ IsotropicMaterial::IsotropicMaterial(Texture* albedo)
 {
 }
 
-bool IsotropicMaterial::Scatter(const Ray3& ray, const HitRecord& hit_record, ScatterRecord& scatter_record)
+bool IsotropicMaterial::Scatter(const Ray3& ray, const HitRecord& hit_record, Vector3& attenuation, Ray3& scattered_ray) const
 {
-	scatter_record.is_specular = true;
-	scatter_record.specular_ray = Ray3(hit_record.point, Vector3::GetRandomInUnitSphere(), ray.time);
-	scatter_record.attenuation = albedo_->GetColor(hit_record.u, hit_record.v, hit_record.point);
+	scattered_ray = Ray3(hit_record.point, Vector3::GetRandomInUnitSphere(), ray.time);
+	attenuation = albedo_->GetColor(hit_record.u, hit_record.v, hit_record.point);
 	return true;
 }
 }  // namespace raytracing

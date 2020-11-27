@@ -127,7 +127,7 @@ int main()
 	options.max_ray_depth = 20;
 	options.number_of_threads = 8;
 	options.samples_per_pixel = 50;
-	options.background_color = Vector3(0.0, 0.0, 0.0);
+	options.background_color = Vector3(0.3, 0.3, 0.3);
 
 	Camera camera;
 	auto lights = new HittableList();
